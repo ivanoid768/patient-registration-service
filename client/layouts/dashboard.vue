@@ -5,7 +5,7 @@
         <Header />
       </a-layout-header>
       <a-layout>
-        <a-layout-sider>
+        <a-layout-sider theme="light">
           <Sidebar />
         </a-layout-sider>
         <a-layout-content>
@@ -20,24 +20,23 @@
 </template>
 
 <script>
-  import Header from '@/components/Header.vue'
-  import Sidebar from '@/components/Sidebar.vue'
-  import Footer from '@/components/Footer.vue'
+import Header from "@/components/Header.vue";
+import Sidebar from "@/components/Sidebar.vue";
+import Footer from "@/components/Footer.vue";
 
-  export default {
-    components: {
-      Header,
-      Sidebar,
-      Footer
-    }
-
+export default {
+  components: {
+    Header,
+    Sidebar,
+    Footer
   }
+};
 </script>
 
 <style lang="scss" scoped>
-  .dashboard {
-    .ant-layout-content {
-      min-height: 85vh;
-    }
+.dashboard {
+  .ant-layout-content {
+    min-height: 85vh;
   }
+}
 </style>

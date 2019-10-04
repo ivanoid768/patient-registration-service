@@ -1,10 +1,9 @@
 <template>
-  <div class="content">Content!</div>
+  <div class="content"><h2>График приема на месяц</h2></div>
 </template>
 
 <script>
   export default {
-    middleware: 'index',
     layout: 'dashboard'
   }
 </script>
