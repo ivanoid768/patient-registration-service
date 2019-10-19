@@ -4,7 +4,7 @@
       <a-layout-header>
         <Header />
       </a-layout-header>
-      <a-layout>
+      <a-layout style="background-color: #fafafa;">
         <a-layout-sider theme="light">
           <Sidebar />
         </a-layout-sider>
@@ -37,6 +37,7 @@ export default {
 .dashboard {
   .ant-layout-content {
     min-height: 85vh;
+    padding: 10px;
   }
 }
 </style>
