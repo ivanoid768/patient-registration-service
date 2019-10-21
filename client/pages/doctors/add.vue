@@ -58,8 +58,13 @@
 </template>
 
 <script>
+// import DoctorForm from "@/components/doctor/Form";
+
 export default {
   layout: "dashboard",
+  // components: {
+  //   DoctorForm
+  // },
   data() {
     return {
       form: this.$form.createForm(this)
