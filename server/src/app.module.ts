@@ -4,7 +4,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserSchema } from './models/users';
 import { AuthController } from './modules/auth/auth.controller';
-import { UserService } from './modules/auth/user.service';
+import { UserService, IUserService } from './modules/auth/user.service';
+
+// const UserServiceProvider ={
+//   provide: IUserService,
+//   userClass: UserService
+// }
 
 @Module({
   imports: [
@@ -19,6 +24,12 @@ import { UserService } from './modules/auth/user.service';
     MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, UserService],
+  providers: [{
+    provide: AppService,
+    useClass: AppService
+  }, {
+    provide: IUserService,
+    useClass: UserService,
+  }],
 })
 export class AppModule { }
