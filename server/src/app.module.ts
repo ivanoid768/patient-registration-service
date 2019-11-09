@@ -4,12 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserSchema } from './models/users';
 import { AuthController } from './modules/auth/auth.controller';
-import { UserService, IUserService } from './modules/auth/user.service';
-
-// const UserServiceProvider ={
-//   provide: IUserService,
-//   userClass: UserService
-// }
+import { UserService } from './modules/auth/user.service';
+import { UserServiceToken } from './common/IoC_Tokens';
 
 @Module({
   imports: [
@@ -28,7 +24,7 @@ import { UserService, IUserService } from './modules/auth/user.service';
     provide: AppService,
     useClass: AppService
   }, {
-    provide: IUserService,
+    provide: UserServiceToken,
     useClass: UserService,
   }],
 })

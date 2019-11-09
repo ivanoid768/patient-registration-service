@@ -1,10 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Inject } from '@nestjs/common';
 import { IUserService } from './user.service';
 import { CreateUserDto } from './signup.dto';
+import { UserServiceToken } from 'src/common/IoC_Tokens';
 
 @Controller()
 export class AuthController {
-  constructor(private readonly userService: IUserService) {}
+  constructor(@Inject(UserServiceToken) private readonly userService: IUserService) {}
 
   @Post('/signup')
   async signUp( @Body() newUser: CreateUserDto ): Promise<string> {
