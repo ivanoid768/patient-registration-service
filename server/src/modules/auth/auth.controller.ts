@@ -3,6 +3,7 @@ import { IUserService } from './user.service';
 import { CreateUserDto } from './signup.dto';
 import { UserServiceToken } from 'src/common/IoC_Tokens';
 import { SignupValidationPipe } from './validateSignup.pipe';
+import { HashPasswordPipe } from './hashPassword.pipe';
 
 @Controller()
 export class AuthController {
@@ -10,6 +11,7 @@ export class AuthController {
 
   @Post('/signup')
   @UsePipes(SignupValidationPipe)
+  @UsePipes(HashPasswordPipe)
   async signUp( @Body() newUser: CreateUserDto ): Promise<string> {
 
     const user = await this.userService.create(newUser) //TODO validate input, hash password!, check if user exists already
