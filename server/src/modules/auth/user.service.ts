@@ -6,6 +6,7 @@ import { IUser } from 'src/models/users';
 
 export interface IUserService {
   create(arg1: CreateUserDto): Promise<IUser>
+  hasUser(createUserDto: CreateUserDto): Promise<boolean>
 }
 
 @Injectable()
@@ -14,6 +15,11 @@ export class UserService implements IUserService {
 
   async create(createUserDto: CreateUserDto): Promise<IUser> {
     return this.userModel.create(createUserDto);
+  }
+
+  async hasUser(createUserDto: CreateUserDto): Promise<boolean> {
+    const count = await this.userModel.count({email:createUserDto.email}).exec();
+    return count > 0;
   }
 
 }

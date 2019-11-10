@@ -9,3 +9,7 @@ export class CreateUserDto {
     readonly password: string;
     readonly role: Role
 }
+
+export class CreateUserInput extends CreateUserDto{
+    readonly passConfirm: string;
+}
