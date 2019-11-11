@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import * as isemail from 'isemail';
 
 export enum Role {
     Owner = 'Owner',
@@ -11,7 +12,7 @@ export interface IUser extends mongoose.Document {
     surname: string;
     middlename?: string;
     email: string;
-    phone: number;
+    phone: string;
     password: string;
     role: Role;
 }
@@ -19,22 +20,37 @@ export interface IUser extends mongoose.Document {
 export const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     surname: {
-        type: String
+        type: String,
+        required: true,
+        trim: true
     },
     middlename: {
-        type: String
+        type: String,
+        trim: true
     },
     email: {
-        type: String
+        type: String,
+        required: true,
+        validate: {
+            validator: (email: string) => {
+                return isemail.validate(email)
+            },
+            msg: `Error. Email must be valid e-mail address!`
+        }
     },
-    phone:{
-        type: Number, //TODO validate isInt
+    phone: {
+        type: String,
+        trim: true,
+        match: /^[+]?[0-9-]{5,}$/i,
     },
     password: {
-        type: String
+        type: String,
+        required: true,
+        match: /^[a-zA-Z0-9$@$!%*?&#^-_.+]{8,}$/i
     },
     role: {
         type: Role,
