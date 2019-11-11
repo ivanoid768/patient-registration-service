@@ -40,17 +40,24 @@ export const UserSchema = new mongoose.Schema({
                 return isemail.validate(email)
             },
             msg: `Error. Email must be valid e-mail address!`
+        },
+        lowercase: true,
+        index:{
+            unique: true
         }
     },
     phone: {
         type: String,
         trim: true,
         match: /^[+]?[0-9-]{5,}$/i,
+        index:{
+            unique: true
+        }
     },
     password: {
         type: String,
         required: true,
-        match: /^[a-zA-Z0-9$@$!%*?&#^-_.+]{8,}$/i
+        // match: /^[a-zA-Z0-9$@$!%*?&#^-_.+]{8,}$/i
     },
     role: {
         type: Role,

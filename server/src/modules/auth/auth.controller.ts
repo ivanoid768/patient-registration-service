@@ -10,8 +10,8 @@ export class AuthController {
   constructor(@Inject(UserServiceToken) private readonly userService: IUserService) {}
 
   @Post('/signup')
-  @UsePipes(SignupValidationPipe)
   @UsePipes(HashPasswordPipe)
+  @UsePipes(SignupValidationPipe)
   async signUp( @Body() newUser: CreateUserDto ): Promise<string> {
 
     const user = await this.userService.create(newUser) //TODO validate input, hash password!, check if user exists already
