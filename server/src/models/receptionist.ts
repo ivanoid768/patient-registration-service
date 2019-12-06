@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose';
 import * as isemail from 'isemail';
 
-export namespace Owner {
-    export interface IOwner extends mongoose.Document {
+export namespace Receptionist {
+    export interface IReceptionist extends mongoose.Document {
         name: string;
         surname: string;
         middlename?: string;
@@ -10,9 +10,9 @@ export namespace Owner {
         email?: string;
     }
 
-    export const OwnerToken = 'OwnerDIToken'
+    export const ReceptionistToken = 'ReceptionistDIToken'
 
-    export const OwnerSchema = new mongoose.Schema({
+    export const ReceptionistSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
@@ -50,14 +50,14 @@ export namespace Owner {
         }
     })
 
-    OwnerSchema.pre('save', async function () {
-        const self: IOwner = this as IOwner;
-        console.log('OwnerSchema.pre.save')
+    ReceptionistSchema.pre('save', async function () {
+        const self: IReceptionist = this as IReceptionist;
+        console.log('ReceptionistSchema.pre.save')
 
         if (!self.email && !self.phone) {
-            throw new Error(`Owner should have at least phone or email!`)
+            throw new Error(`Receptionist should have at least phone or email!`)
         }
     })
 
-    // export { OwnerSchema } // Export declarations are not permitted in a namespace.
+    // export { ReceptionistSchema } // Export declarations are not permitted in a namespace.
 }

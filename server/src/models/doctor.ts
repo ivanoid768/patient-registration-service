@@ -1,18 +1,20 @@
 import * as mongoose from 'mongoose';
 import * as isemail from 'isemail';
 
-export namespace Owner {
-    export interface IOwner extends mongoose.Document {
+export namespace Doctor {
+    export interface IDoctor extends mongoose.Document {
         name: string;
         surname: string;
         middlename?: string;
         phone?: string;
         email?: string;
+        specialization: string;
+        schedule?: mongoose.Types.ObjectId
     }
 
-    export const OwnerToken = 'OwnerDIToken'
+    export const DoctorToken = 'DoctorDIToken'
 
-    export const OwnerSchema = new mongoose.Schema({
+    export const DoctorSchema = new mongoose.Schema({
         name: {
             type: String,
             required: true,
@@ -47,17 +49,25 @@ export namespace Owner {
             index: {
                 unique: true
             }
+        },
+        specialization:{
+            type: String,
+            trim: true,
+            lowercase: true
+        },
+        schedule: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Schedule'
         }
     })
 
-    OwnerSchema.pre('save', async function () {
-        const self: IOwner = this as IOwner;
-        console.log('OwnerSchema.pre.save')
+    DoctorSchema.pre('save', async function () {
+        const self: IDoctor = this as IDoctor;
+        console.log('DoctorSchema.pre.save')
 
         if (!self.email && !self.phone) {
-            throw new Error(`Owner should have at least phone or email!`)
+            throw new Error(`Doctor should have at least phone or email!`)
         }
     })
 
-    // export { OwnerSchema } // Export declarations are not permitted in a namespace.
 }
