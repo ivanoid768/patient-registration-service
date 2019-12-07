@@ -1,1 +1,1 @@
-export const UserServiceToken = Symbol('UserServiceToken')
+export const UserServiceToken = 'UserServiceToken'

@@ -7,15 +7,20 @@ export enum Role {
     Doctor = 'Doctor'
 }
 
-export interface IUser extends mongoose.Document {
-    name: string;
-    surname: string;
-    middlename?: string;
-    email: string;
-    phone: string;
-    password: string;
-    role: Role;
+export namespace User {
+    export interface IUser extends mongoose.Document {
+        name: string;
+        surname: string;
+        middlename?: string;
+        email: string;
+        phone: string;
+        password: string;
+        role: Role;
+    }
+
+    export const UserToken = 'UserModelDIToken'
 }
+
 
 export const UserSchema = new mongoose.Schema({
     name: {
@@ -42,7 +47,7 @@ export const UserSchema = new mongoose.Schema({
             msg: `Error. Email must be valid e-mail address!`
         },
         lowercase: true,
-        index:{
+        index: {
             unique: true
         }
     },
@@ -50,7 +55,7 @@ export const UserSchema = new mongoose.Schema({
         type: String,
         trim: true,
         match: /^[+]?[0-9-]{5,}$/i,
-        index:{
+        index: {
             unique: true
         }
     },

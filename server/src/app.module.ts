@@ -6,6 +6,7 @@ import { UserSchema } from './models/users';
 import { AuthController } from './modules/auth/auth.controller';
 import { UserService } from './modules/auth/user.service';
 import { UserServiceToken } from './common/IoC_Tokens';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { UserServiceToken } from './common/IoC_Tokens';
       useCreateIndex: true,
       useUnifiedTopology: true,
     }),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }])
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    UsersModule
   ],
   controllers: [AppController, AuthController],
   providers: [{
