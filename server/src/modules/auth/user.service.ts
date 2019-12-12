@@ -26,4 +26,14 @@ export class UserService implements IUserService {
 		return count > 0;
 	}
 
+	async getOneByEmail(email) {
+		const user = await this.userModel.findOne({ email: email }).exec()
+
+		if (!user) {
+			throw new Error(`Has no user with email: ${email}`)
+		}
+
+		return user
+	}
+
 }
