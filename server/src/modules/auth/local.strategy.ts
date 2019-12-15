@@ -1,25 +1,29 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Inject, Body } from '@nestjs/common';
 import { UserService } from './user.service';
 import * as bcrypt from 'bcrypt';
+import { UserServiceToken } from 'src/common/IoC_Tokens';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private readonly userService: UserService) {
-        super();
+    constructor(@Inject(UserServiceToken) private readonly userService: UserService) {
+        super({
+            usernameField: 'email'
+        });
     }
 
-    async validate(login: string, password: string): Promise<any> {
-        const user = await this.userService.getOneByEmail(login);
+    async validate(@Body('email') email: string, @Body('password') password: string): Promise<any> {
+        
+        const user = await this.userService.getOneByEmail(email);
 
         if (!user) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('email');
         }
 
-        const passwordIsValid = await bcrypt.compare(password,user.password)
+        const passwordIsValid = await bcrypt.compare(password, user.password)
 
-        if(!passwordIsValid){
+        if (!passwordIsValid) {
             throw new UnauthorizedException(`invalid_password`);
         }
 
