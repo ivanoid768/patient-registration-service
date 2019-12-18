@@ -1,25 +1,25 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, ParseUUIDPipe } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './signup.dto';
 import { User } from 'src/models/users';
-import { Owner } from 'src/models/owner'
-import { JwtService } from '@nestjs/jwt'
+import { Session } from 'src/models/session';
+import { compare as bcryptCompare } from 'bcrypt';
+import { v1 as uuid } from 'uuid';
 
 export interface IUserService {
 	create(arg1: CreateUserDto): Promise<User.IUser>
 	hasUser(createUserDto: CreateUserDto): Promise<boolean>
 	getOneByEmail(email: string): Promise<User.IUser>
 	getOneById(id: string): Promise<User.IUser>
-	login(user: User.IUser): Promise<{ access_token: string }>
+	login(email: string, password: string): Promise<string | Error>
 }
 
 @Injectable()
 export class UserService implements IUserService {
 	constructor(
 		@InjectModel(User.UserToken) private readonly userModel: Model<User.IUser>,
-		private readonly jwtService: JwtService
-		// @InjectModel(Owner.OwnerToken) private readonly ownerModel: Model<Owner.IOwner>
+		@InjectModel(Session.SessionToken) private readonly sessionModel: Model<Session.ISession>,
 	) { }
 
 	async create(createUserDto: CreateUserDto): Promise<User.IUser> {
@@ -45,12 +45,28 @@ export class UserService implements IUserService {
 		return this.userModel.findById(id).exec()
 	}
 
-	async login(user: User.IUser) {
-		const payload = { userId: user.id };
+	async login(email: string, password: string) {
+		let user = await this.userModel.findOne({ email: email.trim().toLowerCase() }).exec()
+		if (!user) {
+			return new Error(`user_not_exist`)
+		}
 
-		return {
-			access_token: this.jwtService.sign(payload),
-		};
+		let session = await this.sessionModel.findOne({ userId: user.id }).exec()
+		if (session) {
+			return session.token;
+		}
+
+		let passIsValid = await bcryptCompare(user.password, password)
+		if (!passIsValid) {
+			return new Error('invalid_password')
+		}
+
+		let newSession = await this.sessionModel.create({
+			userId: user.id,
+			token: uuid()
+		})
+
+		return newSession.token
 	}
 
 }

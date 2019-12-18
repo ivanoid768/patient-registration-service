@@ -1,7 +1,7 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException, Inject } from '@nestjs/common';
 import { CreateUserInput, CreateUserDto } from './signup.dto';
 import { UserServiceToken } from '../../common/IoC_Tokens';
-import { IUserService } from './user.service';
+import { IUserService } from './auth.service';
 
 @Injectable()
 export class SignupValidationPipe implements PipeTransform {

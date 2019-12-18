@@ -1,10 +1,9 @@
 import { Controller, Post, Body, Inject, UsePipes, UseGuards, Request } from '@nestjs/common';
-import { IUserService } from './user.service';
+import { IUserService } from './auth.service';
 import { CreateUserDto } from './signup.dto';
 import { UserServiceToken } from 'src/common/IoC_Tokens';
 import { SignupValidationPipe } from './validateSignup.pipe';
 import { HashPasswordPipe } from './hashPassword.pipe';
-import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/models/users';
 
 @Controller('auth')
@@ -20,16 +19,24 @@ export class AuthController {
 		return `${user.name} successufully signed up!`
 	}
 
-	@UseGuards(AuthGuard('local'))
 	@Post('login')
-	async login(@Request() { user }: { user: User.IUser }) {
+	async login(@Body('email') email: string, @Body('password') password: string) {
+
+		const token = await this.userService.login(email, password)
+
+		if (token instanceof Error) {
+			console.log(`login_error:`, token);
+			return {
+				error:token.message
+			};
+		}
+
 		return {
-			user: user.email,
-			token: await this.userService.login(user)
+			userEmail: email,
+			token: token
 		}
 	}
 
-	@UseGuards(AuthGuard('jwt'))
 	@Post('logout')
 	getProfile(@Request() { user }: { user: User.IUser }) {
 		return `${user.email} logged out!`;
