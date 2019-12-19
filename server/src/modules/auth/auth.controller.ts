@@ -5,6 +5,7 @@ import { UserServiceToken } from 'src/common/IoC_Tokens';
 import { SignupValidationPipe } from './validateSignup.pipe';
 import { HashPasswordPipe } from './hashPassword.pipe';
 import { User } from 'src/models/users';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -38,7 +39,8 @@ export class AuthController {
 	}
 
 	@Post('logout')
-	getProfile(@Request() { user }: { user: User.IUser }) {
-		return `${user.email} logged out!`;
+	@UseGuards(AuthGuard)
+	logout(@Request() { user_id }: { user_id: string }) {
+		return this.userService.logout(user_id);
 	}
 }
