@@ -1,0 +1,19 @@
+type Query {
+  	me: User!
+}
+
+enum Role {
+	Owner
+    Receptionist
+    Doctor
+}
+
+type User {
+  	id: ID!
+	name: String!
+	surname: String!
+	middlename: String
+	email: string
+	phone: string
+	role: Role!
+}

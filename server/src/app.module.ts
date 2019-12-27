@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserSchema } from './models/users';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { join } from 'path';
 
 @Module({
 	imports: [
@@ -15,6 +17,15 @@ import { AuthModule } from './modules/auth/auth.module';
 			useFindAndModify: false,
 			useCreateIndex: true,
 			useUnifiedTopology: true,
+		}),
+		GraphQLModule.forRoot({
+			include: [UsersModule],
+			typePaths: ['./**/*.graphql'],
+			definitions: {
+				path: join(process.cwd(), 'src/graphql.ts'),
+				outputAs: 'class',
+			},
+			context: ({ req }) => ({ req }),
 		}),
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		UsersModule,

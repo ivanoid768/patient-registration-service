@@ -4,7 +4,6 @@ import { CreateUserDto } from './signup.dto';
 import { UserServiceToken } from 'src/common/IoC_Tokens';
 import { SignupValidationPipe } from './validateSignup.pipe';
 import { HashPasswordPipe } from './hashPassword.pipe';
-import { User } from 'src/models/users';
 import { AuthGuard } from './auth.guard';
 
 @Controller('auth')

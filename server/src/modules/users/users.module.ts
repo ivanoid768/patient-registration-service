@@ -11,6 +11,7 @@ import { ReceptionistService } from './receptionist.service';
 import { ReceptionistController } from './receptionist.controller';
 import { OwnerController } from './owner.controller';
 import { DoctorController } from './doctor.controller';
+import { UserResolver } from './user.resolver';
 
 @Module({
     imports: [
@@ -31,7 +32,9 @@ import { DoctorController } from './doctor.controller';
             schema: Receptionist.ReceptionistSchema
         }])
     ],
-    providers: [OwnerService, UserService, DoctorService, ReceptionistService],
+    providers: [OwnerService, UserService, DoctorService, ReceptionistService,
+        UserResolver
+    ],
     controllers: [ReceptionistController, OwnerController, DoctorController]
 })
 export class UsersModule { }
