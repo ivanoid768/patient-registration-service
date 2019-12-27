@@ -13,7 +13,7 @@ type User {
 	name: String!
 	surname: String!
 	middlename: String
-	email: string
-	phone: string
+	email: String
+	phone: String
 	role: Role!
 }

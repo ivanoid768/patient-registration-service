@@ -1,7 +1,7 @@
 import { Resolver, Query , Context } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { UseGuards } from "@nestjs/common";
-import { AuthGuard } from "../auth/auth.guard";
+import { GQLAuthGuard } from "../auth/gqlauth.guard";
 
 interface UserRequest {
     user_id: string;
@@ -15,7 +15,7 @@ export class UserResolver {
     ) { }
 
     @Query('me')
-    @UseGuards(AuthGuard)
+    @UseGuards(GQLAuthGuard)
     async getCurrentUserProfile(@Context() ctx: { req: UserRequest }) {
         return this.userService.getProfile(ctx.req.user_id)
     }

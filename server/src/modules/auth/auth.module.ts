@@ -27,6 +27,9 @@ import { Session, SessionSchema } from 'src/models/session';
             provide: UserServiceToken,
             useClass: UserService,
         }
+    ],
+    exports:[
+        UserServiceToken
     ]
 })
 export class AuthModule { }

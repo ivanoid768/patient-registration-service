@@ -12,6 +12,7 @@ import { ReceptionistController } from './receptionist.controller';
 import { OwnerController } from './owner.controller';
 import { DoctorController } from './doctor.controller';
 import { UserResolver } from './user.resolver';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
@@ -30,7 +31,8 @@ import { UserResolver } from './user.resolver';
         {
             name: Receptionist.ReceptionistToken,
             schema: Receptionist.ReceptionistSchema
-        }])
+        }]),
+        AuthModule
     ],
     providers: [OwnerService, UserService, DoctorService, ReceptionistService,
         UserResolver

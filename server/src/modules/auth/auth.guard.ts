@@ -3,7 +3,7 @@ import { Request } from "express";
 import { IUserService } from "./auth.service";
 import { UserServiceToken } from "src/common/IoC_Tokens";
 
-interface UserRequest extends Request{
+export interface UserRequest extends Request{
     user_id: string;
 }
 
@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
 
-        const request = context.switchToHttp().getRequest<UserRequest>();
+        const request = this.getRequest(context)
         const auth_token = request?.header('Authorization')
 
         if (!auth_token) {
@@ -35,6 +35,10 @@ export class AuthGuard implements CanActivate {
         request.user_id = userId;
 
         return true;
+    }
+
+    getRequest(context:ExecutionContext){
+        return context.switchToHttp().getRequest<UserRequest>();
     }
 
 }
