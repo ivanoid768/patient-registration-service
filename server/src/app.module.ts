@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
@@ -7,6 +7,7 @@ import { UserSchema } from './models/users';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
+import { GQLAuthMiddleware } from './modules/auth/gqlauth.middleware';
 
 @Module({
 	imports: [
@@ -37,4 +38,10 @@ import { join } from 'path';
 		useClass: AppService
 	}],
 })
-export class AppModule { }
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer
+			.apply(GQLAuthMiddleware)
+			.forRoutes({ path: 'graphql', method: RequestMethod.POST })
+	}
+}

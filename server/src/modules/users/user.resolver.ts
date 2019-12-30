@@ -15,7 +15,6 @@ export class UserResolver {
     ) { }
 
     @Query('me')
-    @UseGuards(GQLAuthGuard)
     async getCurrentUserProfile(@Context() ctx: { req: UserRequest }) {
         return this.userService.getProfile(ctx.req.user_id)
     }
