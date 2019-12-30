@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { join } from 'path';
 import { GQLAuthMiddleware } from './modules/auth/gqlauth.middleware';
+import { AuthRequiredDirective } from './modules/auth/authRequiredDirective';
 
 @Module({
 	imports: [
@@ -26,7 +27,10 @@ import { GQLAuthMiddleware } from './modules/auth/gqlauth.middleware';
 				path: join(process.cwd(), 'src/graphql.ts'),
 				outputAs: 'class',
 			},
-			context: ({ req }) => ({ req }),
+			context: ({ req }) => ({ user_id: req.user_id, user_role: req.user_role }),
+			schemaDirectives: {
+				authRequired: AuthRequiredDirective,
+			},
 		}),
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		UsersModule,

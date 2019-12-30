@@ -1,6 +1,6 @@
 import { NestMiddleware, Injectable, Inject, ForbiddenException } from "@nestjs/common";
 import { Response } from "express";
-import { UserServiceToken } from "src/common/IoC_Tokens";
+import { UserServiceToken } from "../../common/IoC_Tokens";
 import { IUserService } from "./auth.service";
 import { UserRequest } from "./auth.guard";
 
@@ -22,7 +22,7 @@ export class GQLAuthMiddleware implements NestMiddleware {
 
         let userId = await this.userService.getUserIdByToken(auth_token)
         if (userId instanceof ForbiddenException) {
-            return false;
+            throw userId;
         }
 
         if (userId instanceof Error) {
@@ -30,6 +30,9 @@ export class GQLAuthMiddleware implements NestMiddleware {
         }
 
         req.user_id = userId;
+        req.user_role = (await this.userService.getOneById(userId)).role;
+        // console.log(req.user_role);
+        
 
         return next()
     }

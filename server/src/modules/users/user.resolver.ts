@@ -3,10 +3,6 @@ import { UserService } from "./user.service";
 import { UseGuards } from "@nestjs/common";
 import { GQLAuthGuard } from "../auth/gqlauth.guard";
 
-interface UserRequest {
-    user_id: string;
-}
-
 @Resolver('User')
 export class UserResolver {
     constructor(
@@ -15,8 +11,8 @@ export class UserResolver {
     ) { }
 
     @Query('me')
-    async getCurrentUserProfile(@Context() ctx: { req: UserRequest }) {
-        return this.userService.getProfile(ctx.req.user_id)
+    async getCurrentUserProfile(@Context() ctx: { user_id: string }) {
+        return this.userService.getProfile(ctx.user_id)
     }
 
     // @Query('author')
