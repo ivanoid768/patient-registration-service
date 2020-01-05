@@ -23,10 +23,10 @@ import { AuthRequiredDirective } from './modules/auth/authRequiredDirective';
 		GraphQLModule.forRoot({
 			include: [UsersModule],
 			typePaths: ['./**/*.graphql'],
-			definitions: {
-				path: join(process.cwd(), 'src/graphql.ts'),
-				outputAs: 'class',
-			},
+			// definitions: {
+			// 	path: join(process.cwd(), 'src/graphql.ts'),
+			// 	outputAs: 'class',
+			// },
 			context: ({ req }) => ({ user_id: req.user_id, user_role: req.user_role }),
 			schemaDirectives: {
 				authRequired: AuthRequiredDirective,
