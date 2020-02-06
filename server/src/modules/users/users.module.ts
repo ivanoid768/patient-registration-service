@@ -7,8 +7,7 @@ import { Receptionist } from 'src/models/receptionist';
 import { OwnerService } from './owner.service';
 import { UserService } from './user.service';
 import { DoctorService } from './doctor.service';
-import { ReceptionistService } from './receptionist.service';
-import { ReceptionistController } from './receptionist.controller';
+import { ReceptionistService } from './receptionists/receptionist.service';
 import { OwnerController } from './owner.controller';
 import { DoctorController } from './doctor.controller';
 import { UserResolver } from './user.resolver';
@@ -37,6 +36,6 @@ import { AuthModule } from '../auth/auth.module';
     providers: [OwnerService, UserService, DoctorService, ReceptionistService,
         UserResolver
     ],
-    controllers: [ReceptionistController, OwnerController, DoctorController]
+    controllers: [ OwnerController, DoctorController]
 })
 export class UsersModule { }

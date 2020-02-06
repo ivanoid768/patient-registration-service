@@ -12,6 +12,6 @@ export class UserService {
     async getProfile(userId: string){
         let user = (await this.userModel.findById(userId).exec()).toObject()
         delete user.password
-        return user;
+        return user as User.IUser;
     }
 }

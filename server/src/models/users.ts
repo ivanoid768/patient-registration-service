@@ -54,10 +54,10 @@ export const UserSchema = new mongoose.Schema({
     phone: {
         type: String,
         trim: true,
-        match: /^[+]?[0-9-]{5,}$/i,
-        index: {
-            unique: true
-        }
+        match: /^[+]{0,1}\d{6,11}$/i,
+        set: ((phone: string) => {
+            return phone.replace(/(-|\s)/i, '')
+        })
     },
     password: {
         type: String,
@@ -69,3 +69,5 @@ export const UserSchema = new mongoose.Schema({
         enum: ['Owner', 'Receptionist', 'Doctor']
     }
 });
+
+export const UserModel = mongoose.model<User.IUser>('User', UserSchema); 

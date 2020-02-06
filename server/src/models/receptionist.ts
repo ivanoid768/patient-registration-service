@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import * as isemail from 'isemail';
+import { UserModel } from './users';
 
 export namespace Receptionist {
     export interface IReceptionist extends mongoose.Document {
@@ -12,43 +13,7 @@ export namespace Receptionist {
 
     export const ReceptionistToken = 'ReceptionistDIToken'
 
-    export const ReceptionistSchema = new mongoose.Schema({
-        name: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        surname: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        middlename: {
-            type: String,
-            trim: true
-        },
-        phone: {
-            type: String,
-            trim: true,
-            match: /^[+]{0,1}\d{6,11}$/i,
-            set: ((phone: string) => {
-                return phone.replace(/(-|\s)/i, '')
-            })
-        },
-        email: {
-            type: String,
-            validate: {
-                validator: (email: string) => {
-                    return isemail.validate(email)
-                },
-                msg: `Error. Email must be valid e-mail address!`
-            },
-            lowercase: true,
-            index: {
-                unique: true
-            }
-        }
-    })
+    export const ReceptionistSchema = UserModel.discriminator('Receptionist', new mongoose.Schema({})).schema;
 
     ReceptionistSchema.pre('save', async function () {
         const self: IReceptionist = this as IReceptionist;

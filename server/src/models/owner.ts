@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose';
 import * as isemail from 'isemail';
+import { UserModel } from './users';
 
 export namespace Owner {
     export interface IOwner extends mongoose.Document {
@@ -12,43 +13,7 @@ export namespace Owner {
 
     export const OwnerToken = 'OwnerDIToken'
 
-    export const OwnerSchema = new mongoose.Schema({
-        name: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        surname: {
-            type: String,
-            required: true,
-            trim: true
-        },
-        middlename: {
-            type: String,
-            trim: true
-        },
-        phone: {
-            type: String,
-            trim: true,
-            match: /^[+]{0,1}\d{6,11}$/i,
-            set: ((phone: string) => {
-                return phone.replace(/(-|\s)/i, '')
-            })
-        },
-        email: {
-            type: String,
-            validate: {
-                validator: (email: string) => {
-                    return isemail.validate(email)
-                },
-                msg: `Error. Email must be valid e-mail address!`
-            },
-            lowercase: true,
-            index: {
-                unique: true
-            }
-        }
-    })
+    export const OwnerSchema = UserModel.discriminator('Owner', new mongoose.Schema({})).schema;
 
     OwnerSchema.pre('save', async function () {
         const self: IOwner = this as IOwner;
@@ -59,5 +24,4 @@ export namespace Owner {
         }
     })
 
-    // export { OwnerSchema } // Export declarations are not permitted in a namespace.
 }

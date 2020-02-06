@@ -1,0 +1,27 @@
+extend type Query {
+  	listReceptionist(search: String): Receptionist! @authRequired(role: Owner)
+}
+
+extend type Mutation {
+	addReceptionist(input: CreateReceptionistInput!)
+  	confirm(id: ID!): Receptionist! @authRequired(role: Owner)
+}
+
+type Receptionist {
+	id: ID!
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	role: Role!
+}
+
+input CreateReceptionistInput {
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	password: String!
+}
