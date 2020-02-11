@@ -3,7 +3,7 @@ extend type Query {
 }
 
 extend type Mutation {
-	addReceptionist(input: CreateReceptionistInput!)
+	addReceptionist(input: CreateReceptionistInput!): Receptionist!
   	confirm(id: ID!): Receptionist! @authRequired(role: Owner)
 }
 

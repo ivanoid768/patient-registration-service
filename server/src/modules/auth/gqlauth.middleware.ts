@@ -12,7 +12,7 @@ export class GQLAuthMiddleware implements NestMiddleware {
     ) { }
 
     async use(req: UserRequest, res: Response, next: Function) {
-        console.log('Auth middleware...');
+        // console.log('Auth middleware...');
 
         const auth_token = req?.header('Authorization')
 

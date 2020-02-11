@@ -3,9 +3,11 @@ import { UserService } from '../user.service';
 import { ReceptionistService } from "./receptionist.service";
 import { Role } from "src/models/users";
 import { CreateReceptionistInput } from "./receptionist.dto";
+import { UsePipes } from "@nestjs/common";
+import { HashPasswordPipe } from "src/modules/auth/hashPassword.pipe";
 
 @Resolver('Receptionist')
-export class UserResolver {
+export class ReceptionistResolver {
     constructor(
         private readonly receptionistService: ReceptionistService,
         private readonly userService: UserService,
@@ -23,8 +25,10 @@ export class UserResolver {
     }
 
     @Mutation('addReceptionist')
-    async addReceptionist(@Args() input: CreateReceptionistInput) {
-
+    @UsePipes(HashPasswordPipe)
+    async addReceptionist(@Args('input') input: CreateReceptionistInput) {
+        console.log(input);
+        
         return this.receptionistService.create(input)
     }
 

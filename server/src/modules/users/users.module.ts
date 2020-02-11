@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Owner } from 'src/models/owner';
-import { Doctor } from 'src/models/doctor';
-import { UserSchema, User } from 'src/models/users';
-import { Receptionist } from 'src/models/receptionist';
+import { Owner } from '../../models/owner';
+import { Doctor } from '../../models/doctor';
+import { UserSchema, User } from '../../models/users';
+import { Receptionist } from '../../models/receptionist';
 import { OwnerService } from './owner.service';
 import { UserService } from './user.service';
 import { DoctorService } from './doctor.service';
@@ -12,6 +12,8 @@ import { OwnerController } from './owner.controller';
 import { DoctorController } from './doctor.controller';
 import { UserResolver } from './user.resolver';
 import { AuthModule } from '../auth/auth.module';
+import { ReceptionistResolver } from './receptionists/receptionist.resolver';
+import { ReceptController } from './receptionists/receptionist.controller';
 
 @Module({
     imports: [
@@ -34,8 +36,8 @@ import { AuthModule } from '../auth/auth.module';
         AuthModule
     ],
     providers: [OwnerService, UserService, DoctorService, ReceptionistService,
-        UserResolver
+        UserResolver, ReceptionistResolver
     ],
-    controllers: [ OwnerController, DoctorController]
+    controllers: [ OwnerController, DoctorController, ReceptController]
 })
 export class UsersModule { }

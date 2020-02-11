@@ -13,7 +13,11 @@ export class ReceptionistService {
     ) { }
 
     async create(receptionist: CreateReceptionistDto) {
-        return this.receptionistModel.create(receptionist)
+        let result = await this.receptionistModel.create({
+            ...receptionist, role: Role.Receptionist
+        }) // TODO: only Owner(Administrator)?
+        console.log(result);
+        return result;
     }
 
     async list(search?: string) {

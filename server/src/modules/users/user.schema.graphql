@@ -4,6 +4,12 @@ type Query {
   	me: User! @authRequired(role: Doctor)
 }
 
+type Mutation {
+	_empty: String
+}
+
+# TODO: move to graphql common file
+
 enum Role {
 	Owner
     Receptionist

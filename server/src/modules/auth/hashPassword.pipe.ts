@@ -6,7 +6,8 @@ export class HashPasswordPipe implements PipeTransform {
 
     async transform(value: any, metadata: ArgumentMetadata) {
 
-        let passwordKey = metadata.data || 'password';
+        let passwordKey = 'password'; // metadata.data || 'password'
+        // console.log(passwordKey, value[passwordKey], value.password);
 
         if (value[passwordKey]) {
             let pass = value[passwordKey] as string;
@@ -14,7 +15,7 @@ export class HashPasswordPipe implements PipeTransform {
                 const saltRounds = 10;
                 const passhash = await bcrypt.hash(pass, saltRounds)
                 value[passwordKey] = passhash;
-            }else{
+            } else {
                 throw new BadRequestException('Password length must be at least 8, password must not contain any spaces and non latin (english) letters!')
             }
         }
