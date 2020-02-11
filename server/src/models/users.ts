@@ -16,6 +16,7 @@ export namespace User {
         phone: string;
         password: string;
         role: Role;
+        confirmed: boolean;
     }
 
     export const UserToken = 'UserModelDIToken'
@@ -67,7 +68,12 @@ export const UserSchema = new mongoose.Schema({
     role: {
         type: Role,
         enum: ['Owner', 'Receptionist', 'Doctor']
-    }
+    },
+    confirmed:{
+        type: mongoose.Schema.Types.Boolean,
+        required: true,
+        default: false
+    },
 });
 
 export const UserModel = mongoose.model<User.IUser>('User', UserSchema); 

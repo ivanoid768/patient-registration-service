@@ -1,10 +1,10 @@
-import { Resolver, Query, Context, Mutation, Args } from "@nestjs/graphql";
+import { Resolver, Query, Context, Mutation, Args, ResolveProperty, Parent } from "@nestjs/graphql";
 import { UserService } from '../user.service';
 import { ReceptionistService } from "./receptionist.service";
-import { Role } from "src/models/users";
+import { Role } from "../../../models/users";
 import { CreateReceptionistInput } from "./receptionist.dto";
 import { UsePipes } from "@nestjs/common";
-import { HashPasswordPipe } from "src/modules/auth/hashPassword.pipe";
+import { HashPasswordPipe } from "../../../modules/auth/hashPassword.pipe";
 
 @Resolver('Receptionist')
 export class ReceptionistResolver {
@@ -27,8 +27,8 @@ export class ReceptionistResolver {
     @Mutation('addReceptionist')
     @UsePipes(HashPasswordPipe)
     async addReceptionist(@Args('input') input: CreateReceptionistInput) {
-        console.log(input);
-        
+        // console.log(input);
+
         return this.receptionistService.create(input)
     }
 
@@ -36,7 +36,7 @@ export class ReceptionistResolver {
     async confirm(@Args('id') id: string, @Context() ctx: { user_id: string }) {
         let user = await this.userService.getProfile(ctx.user_id)
 
-        return this.receptionistService.confirmCreation(user,id)
+        return this.receptionistService.confirmCreation(user, id)
     }
 
 }

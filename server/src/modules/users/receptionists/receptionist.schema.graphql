@@ -1,5 +1,5 @@
 extend type Query {
-  	listReceptionist(search: String): Receptionist! @authRequired(role: Owner)
+  	listReceptionist(search: String): [Receptionist!]! @authRequired(role: Owner)
 }
 
 extend type Mutation {
@@ -15,6 +15,7 @@ type Receptionist {
 	email: String
 	phone: String
 	role: Role!
+	confirmed: Boolean
 }
 
 input CreateReceptionistInput {

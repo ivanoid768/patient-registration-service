@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Receptionist } from 'src/models/receptionist';
+import { Receptionist } from '../../../models/receptionist';
 import { Model, Schema } from 'mongoose';
-import { User, Role } from 'src/models/users';
+import { User, Role } from '../../../models/users';
 import { CreateReceptionistDto } from './receptionist.dto';
 
 @Injectable()
@@ -31,6 +31,6 @@ export class ReceptionistService {
             return { status: 'error', error: new Error(`user_not_owner`) }
         }
 
-        return this.userModel.findByIdAndUpdate(receptionistId, { confirmed: true, role: Role.Receptionist }).exec()
+        return this.receptionistModel.findByIdAndUpdate(receptionistId, { confirmed: true, role: Role.Receptionist }, { new: true })
     }
 }

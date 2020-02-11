@@ -29,7 +29,7 @@ export abstract class IMutation {
 }
 
 export abstract class IQuery {
-    abstract listReceptionist(search?: string): Receptionist | Promise<Receptionist>;
+    abstract listReceptionist(search?: string): Receptionist[] | Promise<Receptionist[]>;
 
     abstract me(): User | Promise<User>;
 }
@@ -42,6 +42,7 @@ export class Receptionist {
     email?: string;
     phone?: string;
     role: Role;
+    confirmed?: boolean;
 }
 
 export class User {
