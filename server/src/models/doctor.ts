@@ -19,7 +19,8 @@ export namespace Doctor {
         specialization: {
             type: String,
             trim: true,
-            lowercase: true
+            lowercase: true,
+            required: true
         },
         schedule: {
             type: mongoose.Schema.Types.ObjectId,
@@ -29,7 +30,6 @@ export namespace Doctor {
 
     DoctorSchema.pre('save', async function () {
         const self: IDoctor = this as IDoctor;
-        console.log('DoctorSchema.pre.save')
 
         if (!self.email && !self.phone) {
             throw new Error(`Doctor should have at least phone or email!`)

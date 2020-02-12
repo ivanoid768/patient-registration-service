@@ -6,14 +6,15 @@ import { UserSchema, User } from '../../models/users';
 import { Receptionist } from '../../models/receptionist';
 import { OwnerService } from './owner.service';
 import { UserService } from './user.service';
-import { DoctorService } from './doctor.service';
+import { DoctorService } from './doctors/doctor.service';
 import { ReceptionistService } from './receptionists/receptionist.service';
 import { OwnerController } from './owner.controller';
-import { DoctorController } from './doctor.controller';
+import { DoctorController } from './doctors/doctor.controller';
 import { UserResolver } from './user.resolver';
 import { AuthModule } from '../auth/auth.module';
 import { ReceptionistResolver } from './receptionists/receptionist.resolver';
 import { ReceptController } from './receptionists/receptionist.controller';
+import { DoctorResolver } from './doctors/doctor.resolver';
 
 @Module({
     imports: [
@@ -40,7 +41,7 @@ import { ReceptController } from './receptionists/receptionist.controller';
         AuthModule
     ],
     providers: [OwnerService, UserService, DoctorService, ReceptionistService,
-        UserResolver, ReceptionistResolver
+        UserResolver, ReceptionistResolver, DoctorResolver
     ],
     controllers: [OwnerController, DoctorController, ReceptController]
 })

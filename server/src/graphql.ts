@@ -11,6 +11,16 @@ export enum Role {
     SuperAdmin = "SuperAdmin"
 }
 
+export class CreateDoctorInput {
+    name: string;
+    surname: string;
+    middlename?: string;
+    email?: string;
+    phone?: string;
+    password: string;
+    specialization: string;
+}
+
 export class CreateReceptionistInput {
     name: string;
     surname: string;
@@ -20,7 +30,23 @@ export class CreateReceptionistInput {
     password: string;
 }
 
+export class Doctor {
+    id: string;
+    name: string;
+    surname: string;
+    middlename?: string;
+    email?: string;
+    phone?: string;
+    role: Role;
+    confirmed?: boolean;
+    specialization: string;
+}
+
 export abstract class IMutation {
+    abstract addDoctor(input: CreateDoctorInput): Doctor | Promise<Doctor>;
+
+    abstract removeDoctor(id: string): Doctor | Promise<Doctor>;
+
     abstract addReceptionist(input: CreateReceptionistInput): Receptionist | Promise<Receptionist>;
 
     abstract removeReceptionist(id: string): Receptionist | Promise<Receptionist>;
@@ -33,6 +59,8 @@ export abstract class IMutation {
 }
 
 export abstract class IQuery {
+    abstract listDoctor(search?: string): Doctor[] | Promise<Doctor[]>;
+
     abstract listReceptionist(search?: string): Receptionist[] | Promise<Receptionist[]>;
 
     abstract me(): User | Promise<User>;

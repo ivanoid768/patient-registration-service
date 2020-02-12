@@ -1,0 +1,30 @@
+extend type Query {
+  	listDoctor(search: String): [Doctor!]! @authRequired(role: User)
+}
+
+extend type Mutation {
+	addDoctor(input: CreateDoctorInput!): Doctor! @authRequired(role: Admin)
+	removeDoctor(id: ID!): Doctor! @authRequired(role: Admin)
+}
+
+type Doctor {
+	id: ID!
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	role: Role!
+	confirmed: Boolean
+	specialization: String!
+}
+
+input CreateDoctorInput {
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	password: String!
+	specialization: String!
+}
