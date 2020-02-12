@@ -14,7 +14,12 @@ export class UserService {
     }
 
     async confirmCreation(userId: Schema.Types.ObjectId | string) {
-        let result = await this.userModel.findByIdAndUpdate(userId, { confirmed: true }, { new: true }).exec()
+        let result = await this.userModel.findOneAndUpdate({
+            _id: userId,
+            __t: { $ne: 'Owner' }
+        }, {
+            confirmed: true
+        }, { new: true }).exec()
         // console.log(result);
         return result;
     }

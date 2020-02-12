@@ -1,0 +1,29 @@
+extend type Query {
+  	listOwner(search: String): [Owner!]! @authRequired(role: User)
+}
+
+extend type Mutation {
+	addOwner(input: CreateOwnerInput!): Owner! @authRequired(role: Admin)
+	removeOwner(id: ID!): Owner! @authRequired(role: SuperAdmin)
+	confirmOwner(id: ID!): User! @authRequired(role: Admin)
+}
+
+type Owner {
+	id: ID!
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	role: Role!
+	confirmed: Boolean
+}
+
+input CreateOwnerInput {
+	name: String!
+	surname: String!
+	middlename: String
+	email: String
+	phone: String
+	password: String!
+}

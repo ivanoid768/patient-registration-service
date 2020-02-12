@@ -21,6 +21,15 @@ export class CreateDoctorInput {
     specialization: string;
 }
 
+export class CreateOwnerInput {
+    name: string;
+    surname: string;
+    middlename?: string;
+    email?: string;
+    phone?: string;
+    password: string;
+}
+
 export class CreateReceptionistInput {
     name: string;
     surname: string;
@@ -47,6 +56,12 @@ export abstract class IMutation {
 
     abstract removeDoctor(id: string): Doctor | Promise<Doctor>;
 
+    abstract addOwner(input: CreateOwnerInput): Owner | Promise<Owner>;
+
+    abstract removeOwner(id: string): Owner | Promise<Owner>;
+
+    abstract confirmOwner(id: string): User | Promise<User>;
+
     abstract addReceptionist(input: CreateReceptionistInput): Receptionist | Promise<Receptionist>;
 
     abstract removeReceptionist(id: string): Receptionist | Promise<Receptionist>;
@@ -58,8 +73,21 @@ export abstract class IMutation {
     abstract makeAdmin(id: string): User | Promise<User>;
 }
 
+export class Owner {
+    id: string;
+    name: string;
+    surname: string;
+    middlename?: string;
+    email?: string;
+    phone?: string;
+    role: Role;
+    confirmed?: boolean;
+}
+
 export abstract class IQuery {
     abstract listDoctor(search?: string): Doctor[] | Promise<Doctor[]>;
+
+    abstract listOwner(search?: string): Owner[] | Promise<Owner[]>;
 
     abstract listReceptionist(search?: string): Receptionist[] | Promise<Receptionist[]>;
 

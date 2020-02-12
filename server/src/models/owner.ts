@@ -4,6 +4,7 @@ import { UserModel } from './users';
 
 export namespace Owner {
     export interface IOwner extends mongoose.Document {
+        __t: string;
         name: string;
         surname: string;
         middlename?: string;
