@@ -23,9 +23,11 @@ export class CreateReceptionistInput {
 export abstract class IMutation {
     abstract addReceptionist(input: CreateReceptionistInput): Receptionist | Promise<Receptionist>;
 
-    abstract confirm(id: string): Receptionist | Promise<Receptionist>;
+    abstract removeReceptionist(id: string): Receptionist | Promise<Receptionist>;
 
     abstract _empty(): string | Promise<string>;
+
+    abstract confirm(id: string): User | Promise<User>;
 }
 
 export abstract class IQuery {

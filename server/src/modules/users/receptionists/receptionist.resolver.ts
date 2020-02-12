@@ -32,11 +32,11 @@ export class ReceptionistResolver {
         return this.receptionistService.create(input)
     }
 
-    @Mutation('confirm')
-    async confirm(@Args('id') id: string, @Context() ctx: { user_id: string }) {
+    @Mutation('removeReceptionist')
+    async delete(@Args('id') id: string, @Context() ctx: { user_id: string }) {
         let user = await this.userService.getProfile(ctx.user_id)
 
-        return this.receptionistService.confirmCreation(user, id)
+        return this.receptionistService.delete(user, id)
     }
 
 }

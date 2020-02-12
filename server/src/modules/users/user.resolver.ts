@@ -1,4 +1,4 @@
-import { Resolver, Query , Context } from "@nestjs/graphql";
+import { Resolver, Query , Context, Mutation, Args } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { UseGuards } from "@nestjs/common";
 import { GQLAuthGuard } from "../auth/gqlauth.guard";
@@ -13,6 +13,13 @@ export class UserResolver {
     @Query('me')
     async getCurrentUserProfile(@Context() ctx: { user_id: string }) {
         return this.userService.getProfile(ctx.user_id)
+    }
+
+    @Mutation('confirm')
+    async confirm(@Args('id') id: string, @Context() ctx: { user_id: string }) {
+        let user = await this.userService.getProfile(ctx.user_id)
+
+        return this.userService.confirmCreation(user, id)
     }
 
     // @Query('author')

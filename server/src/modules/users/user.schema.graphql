@@ -1,11 +1,12 @@
 directive @authRequired(role: Role) on FIELD_DEFINITION
 
 type Query {
-  	me: User! @authRequired(role: Doctor)
+  	me: User! @authRequired
 }
 
 type Mutation {
 	_empty: String
+	confirm(id: ID!): User! @authRequired(role: Owner)
 }
 
 # TODO: move to graphql common file

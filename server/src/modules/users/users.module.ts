@@ -19,25 +19,29 @@ import { ReceptController } from './receptionists/receptionist.controller';
     imports: [
         MongooseModule.forFeature([{
             name: Owner.OwnerToken,
-            schema: Owner.OwnerSchema
+            schema: Owner.OwnerSchema,
+            collection: User.UserCollectionName
         },
         {
             name: Doctor.DoctorToken,
-            schema: Doctor.DoctorSchema
+            schema: Doctor.DoctorSchema,
+            collection: User.UserCollectionName
         },
         {
             name: User.UserToken,
-            schema: UserSchema
+            schema: UserSchema,
+            collection: User.UserCollectionName
         },
         {
             name: Receptionist.ReceptionistToken,
-            schema: Receptionist.ReceptionistSchema
+            schema: Receptionist.ReceptionistSchema,
+            collection: User.UserCollectionName
         }]),
         AuthModule
     ],
     providers: [OwnerService, UserService, DoctorService, ReceptionistService,
         UserResolver, ReceptionistResolver
     ],
-    controllers: [ OwnerController, DoctorController, ReceptController]
+    controllers: [OwnerController, DoctorController, ReceptController]
 })
 export class UsersModule { }

@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Inject, UsePipes, UseGuards, Request } from '@nestjs/common';
 import { IUserService } from './auth.service';
 import { CreateUserDto } from './signup.dto';
-import { UserServiceToken } from 'src/common/IoC_Tokens';
+import { UserServiceToken } from '../../common/IoC_Tokens';
 import { SignupValidationPipe } from './validateSignup.pipe';
 import { HashPasswordPipe } from './hashPassword.pipe';
 import { AuthGuard } from './auth.guard';
@@ -27,7 +27,7 @@ export class AuthController {
 		if (token instanceof Error) {
 			console.log(`login_error:`, token);
 			return {
-				error:token.message
+				error: token.message
 			};
 		}
 

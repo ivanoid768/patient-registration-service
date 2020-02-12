@@ -20,6 +20,7 @@ export namespace User {
     }
 
     export const UserToken = 'UserModelDIToken'
+    export const UserCollectionName = 'users'
 }
 
 

@@ -26,11 +26,11 @@ export class ReceptionistService {
         return receptionistList;
     }
 
-    async confirmCreation(user: User.IUser, receptionistId: Schema.Types.ObjectId | string) {
+    async delete(user: User.IUser, receptionistId: Schema.Types.ObjectId | string) {
         if (user.role != Role.Owner) {
             return { status: 'error', error: new Error(`user_not_owner`) }
         }
 
-        return this.receptionistModel.findByIdAndUpdate(receptionistId, { confirmed: true, role: Role.Receptionist }, { new: true })
+        return this.receptionistModel.findByIdAndDelete(receptionistId)
     }
 }
