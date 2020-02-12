@@ -33,7 +33,6 @@ export class GQLAuthMiddleware implements NestMiddleware {
         req.user_role = (await this.userService.getOneById(userId)).role;
         // console.log(req.user_role);
         
-
         return next()
     }
 

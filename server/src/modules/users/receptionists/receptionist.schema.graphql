@@ -1,10 +1,10 @@
 extend type Query {
-  	listReceptionist(search: String): [Receptionist!]! @authRequired(role: Owner)
+  	listReceptionist(search: String): [Receptionist!]! @authRequired(role: User)
 }
 
 extend type Mutation {
-	addReceptionist(input: CreateReceptionistInput!): Receptionist!
-	removeReceptionist(id: ID!): Receptionist! @authRequired(role: Owner)
+	addReceptionist(input: CreateReceptionistInput!): Receptionist! @authRequired(role: Admin)
+	removeReceptionist(id: ID!): Receptionist! @authRequired(role: Admin)
 }
 
 type Receptionist {

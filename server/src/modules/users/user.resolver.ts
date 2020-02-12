@@ -1,7 +1,8 @@
-import { Resolver, Query , Context, Mutation, Args } from "@nestjs/graphql";
+import { Resolver, Query, Context, Mutation, Args } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { UseGuards } from "@nestjs/common";
 import { GQLAuthGuard } from "../auth/gqlauth.guard";
+import { Role } from "../../models/users";
 
 @Resolver('User')
 export class UserResolver {
@@ -16,10 +17,13 @@ export class UserResolver {
     }
 
     @Mutation('confirm')
-    async confirm(@Args('id') id: string, @Context() ctx: { user_id: string }) {
-        let user = await this.userService.getProfile(ctx.user_id)
+    async confirm(@Args('id') id: string) {
+        return this.userService.confirmCreation(id)
+    }
 
-        return this.userService.confirmCreation(user, id)
+    @Mutation('makeAdmin')
+    async makeAdmin(@Args('id') id: string) {
+        return this.userService.grandRole(id, Role.Admin)
     }
 
     // @Query('author')

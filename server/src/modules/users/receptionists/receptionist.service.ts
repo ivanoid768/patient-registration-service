@@ -14,9 +14,9 @@ export class ReceptionistService {
 
     async create(receptionist: CreateReceptionistDto) {
         let result = await this.receptionistModel.create({
-            ...receptionist, role: Role.Receptionist
+            ...receptionist, role: Role.Admin
         }) // TODO: only Owner(Administrator)?
-        console.log(result);
+        // console.log(result);
         return result;
     }
 
@@ -26,11 +26,7 @@ export class ReceptionistService {
         return receptionistList;
     }
 
-    async delete(user: User.IUser, receptionistId: Schema.Types.ObjectId | string) {
-        if (user.role != Role.Owner) {
-            return { status: 'error', error: new Error(`user_not_owner`) }
-        }
-
+    async delete(receptionistId: Schema.Types.ObjectId | string) {
         return this.receptionistModel.findByIdAndDelete(receptionistId)
     }
 }

@@ -13,14 +13,13 @@ export class UserService {
         return this.userModel.findById(userId)
     }
 
-    async confirmCreation(user: User.IUser, receptionistId: Schema.Types.ObjectId | string) {
-        if (user.role != Role.Owner) {
-            return { status: 'error', error: new Error(`user_not_owner`) }
-        }
-
-        let result = await this.userModel.findByIdAndUpdate(receptionistId, { confirmed: true }, { new: true }).exec()
+    async confirmCreation(userId: Schema.Types.ObjectId | string) {
+        let result = await this.userModel.findByIdAndUpdate(userId, { confirmed: true }, { new: true }).exec()
         // console.log(result);
-        
         return result;
+    }
+
+    async grandRole(userId: Schema.Types.ObjectId | string, role: Role) {
+        return this.userModel.findByIdAndUpdate(userId, { role: role }, { new: true })
     }
 }

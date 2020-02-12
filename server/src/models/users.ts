@@ -2,9 +2,9 @@ import * as mongoose from 'mongoose';
 import * as isemail from 'isemail';
 
 export enum Role {
-    Owner = 'Owner',
-    Receptionist = 'Receptionist',
-    Doctor = 'Doctor'
+    User = 'User',
+    Admin = 'Admin',
+    SuperAdmin = 'SuperAdmin'
 }
 
 export namespace User {
@@ -68,7 +68,8 @@ export const UserSchema = new mongoose.Schema({
     },
     role: {
         type: Role,
-        enum: ['Owner', 'Receptionist', 'Doctor']
+        required: true,
+        enum: ['Admin', 'User', 'SuperAdmin']
     },
     confirmed:{
         type: mongoose.Schema.Types.Boolean,

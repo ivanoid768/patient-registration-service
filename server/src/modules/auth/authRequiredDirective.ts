@@ -15,11 +15,15 @@ class AuthRequiredDirective extends SchemaDirectiveVisitor {
         field.resolve = async (...args: [any, { [key: string]: any }, any, GraphQLResolveInfo]) => {
             const context = args[2];
             // console.log(args);
-            
+
             const { user_id, user_role }: { user_id: string, user_role: Role } = context;
 
             if (!user_id) {
                 throw new ForbiddenException('You must be logged in');
+            }
+
+            if (requiredAuthRole === 'User' && user_role === 'Admin') {
+                return resolve.apply(this, args);
             }
 
             if (requiredAuthRole) {

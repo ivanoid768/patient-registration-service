@@ -14,13 +14,7 @@ export class ReceptionistResolver {
     ) { }
 
     @Query('listReceptionist')
-    async getReceptionistList(@Context() ctx: { user_id: string }) {
-        let user = await this.userService.getProfile(ctx.user_id)
-
-        if (user.role !== Role.Owner) {
-            throw new Error('fobidden')
-        }
-
+    async getReceptionistList() {
         return this.receptionistService.list()
     }
 
@@ -28,15 +22,12 @@ export class ReceptionistResolver {
     @UsePipes(HashPasswordPipe)
     async addReceptionist(@Args('input') input: CreateReceptionistInput) {
         // console.log(input);
-
         return this.receptionistService.create(input)
     }
 
     @Mutation('removeReceptionist')
-    async delete(@Args('id') id: string, @Context() ctx: { user_id: string }) {
-        let user = await this.userService.getProfile(ctx.user_id)
-
-        return this.receptionistService.delete(user, id)
+    async delete(@Args('id') id: string) {
+        return this.receptionistService.delete(id)
     }
 
 }

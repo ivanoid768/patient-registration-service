@@ -2,8 +2,8 @@ import { Model } from 'mongoose';
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './signup.dto';
-import { User } from 'src/models/users';
-import { Session } from 'src/models/session';
+import { User, Role } from '../../models/users';
+import { Session } from '../../models/session';
 import { compare as bcryptCompare } from 'bcrypt';
 import { v1 as uuid } from 'uuid';
 
@@ -25,7 +25,7 @@ export class UserService implements IUserService {
 	) { }
 
 	async create(createUserDto: CreateUserDto): Promise<User.IUser> {
-		return this.userModel.create(createUserDto);
+		return this.userModel.create({ ...createUserDto, role: Role.User });
 	}
 
 	async hasUser(createUserDto: CreateUserDto): Promise<boolean> {
@@ -71,19 +71,19 @@ export class UserService implements IUserService {
 		return newSession.token
 	}
 
-	async logout(userId:string) {
-		let ok = await this.sessionModel.findOneAndDelete({userId: userId}).exec()
+	async logout(userId: string) {
+		let ok = await this.sessionModel.findOneAndDelete({ userId: userId }).exec()
 
 		return `User with id: ${ok.userId} logged out. Token ${ok.token} is invalid`
 
 	}
 
-	async getUserIdByToken(token: string){
+	async getUserIdByToken(token: string) {
 		let userId = (await this.sessionModel.findOne({ token: token }).exec())?.userId
-        if (!userId) {
-            return new ForbiddenException(`invalid_token`);
+		if (!userId) {
+			return new ForbiddenException(`invalid_token`);
 		}
-		
+
 		return userId;
 
 	}

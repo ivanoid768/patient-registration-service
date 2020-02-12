@@ -6,15 +6,16 @@ type Query {
 
 type Mutation {
 	_empty: String
-	confirm(id: ID!): User! @authRequired(role: Owner)
+	confirm(id: ID!): User! @authRequired(role: Admin)
+	makeAdmin(id: ID!): User! @authRequired(role: Admin)
 }
 
-# TODO: move to graphql common file
+# TODO: move Query and Mutation to graphql common file
 
 enum Role {
-	Owner
-    Receptionist
-    Doctor
+	User
+    Admin
+    SuperAdmin
 }
 
 type User {

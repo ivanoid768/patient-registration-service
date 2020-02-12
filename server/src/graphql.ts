@@ -6,9 +6,9 @@
 
 /* tslint:disable */
 export enum Role {
-    Owner = "Owner",
-    Receptionist = "Receptionist",
-    Doctor = "Doctor"
+    User = "User",
+    Admin = "Admin",
+    SuperAdmin = "SuperAdmin"
 }
 
 export class CreateReceptionistInput {
@@ -28,6 +28,8 @@ export abstract class IMutation {
     abstract _empty(): string | Promise<string>;
 
     abstract confirm(id: string): User | Promise<User>;
+
+    abstract makeAdmin(id: string): User | Promise<User>;
 }
 
 export abstract class IQuery {
