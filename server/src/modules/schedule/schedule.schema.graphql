@@ -1,10 +1,17 @@
 extend type Query {
   	scheduleSettings: ScheduleSettings! @authRequired(role: Admin)
+    daySheduleList: [DayScheduleOpt!]! @authRequired(role: Admin)
+    weekSheduleList: [WeekScheduleOpt!]! @authRequired(role: Admin)
+    monthSheduleList: [MonthScheduleOpt!]! @authRequired(role: Admin)
 }
 
 extend type Mutation {
-    setAppointmentDuration(duration: Int!) ScheduleSettings! @authRequired(role: Admin)
-    addDayScheduleOpt(input: DayScheduleInput): DayScheduleOptResp! @authRequired(role: Admin)
+    setAppointmentDuration(duration: Int!): ScheduleSettings! @authRequired(role: Admin)
+    addDayScheduleOpt(input: DayScheduleInput!, pauses: [Pause!]!): AddDayScheduleOptResp! @authRequired(role: Admin)
+    addWeekScheduleOpt(input: WeekScheduleInput!): AddWeekScheduleOptResp! @authRequired(role: Admin)
+    addMonthScheduleOpt(input: MonthScheduleInput!): AddMonthScheduleOptResp! @authRequired(role: Admin)
+    createSchedule(input: CreateScheduleInput!): Schedule! @authRequired(role: Admin)
+    assignSchedule(scheduleId: ID!, doctors: [Doctor!]!): Schedule! @authRequired(role: Admin)
 }
 
 type TimeRange {
@@ -16,24 +23,101 @@ type ScheduleSettings {
     appointmentDuration: Int!
 }
 
-type DayScheduleOptResp {
+type DayScheduleOpt {
     id: ID!
-    nextStep: String!
-    dayScheduleOpt: DayScheduleOpt!
-    # appointmentDurationId: ID!
+    appointments: [TimeRange!]!
 }
 
-type DayScheduleOpt {
-    appointments: [TimeRange!]!
+type AddDayScheduleOptResp {
+    daySchedule: DayScheduleOpt!
+    nextStep: String!
 }
 
 input DayScheduleInput {
     from: String!
     to: String!
-    pauseList: [Pause!]!
+    # appointmentDurationId: ID! 
+    # TODO
 }
 
 input Pause{
+    from: String!
+    to: String!
+}
+
+type WeekScheduleOpt {
+    id: ID!
+    Monday: DayScheduleOpt!
+    Tuesday: DayScheduleOpt!
+    Wednesday: DayScheduleOpt!
+    Thursday: DayScheduleOpt!
+    Friday: DayScheduleOpt!
+    Saturday: DayScheduleOpt!
+    Sunday: DayScheduleOpt!
+}
+
+type AddWeekScheduleOptResp {
+    weekScheduleOpt: WeekScheduleOpt!
+    nextStep: String!
+    prevStep: String!
+}
+
+type MonthScheduleOpt {
+    id: ID!
+    firstWeek: WeekScheduleOpt!
+    secondWeek: WeekScheduleOpt!
+    thirdWeek: WeekScheduleOpt!
+    fourthWeek: WeekScheduleOpt!
+}
+
+type AddMonthScheduleOptResp {
+    monthScheduleOpt: MonthScheduleOpt!
+    nextStep: String!
+    prevStep: String!
+}
+
+input WeekScheduleInput {
+    MondayDayOptId: ID!
+    TuesdayDayOptId: ID
+    WednesdayDayOptId: ID
+    ThursdayDayOptId: ID
+    FridayDayOptId: ID
+    SaturdayDayOptId: ID
+    SundayDayOptId: ID
+}
+
+input MonthScheduleInput {
+    firstWeekOptId: ID!
+    secondWeekOptId: ID
+    thirdWeekOptId: ID
+    fourthWeekOptId: ID
+}
+
+input CreateScheduleInput {
+    JanuaryOptId: ID!
+    FebruaryOptId: ID
+    MarchOptId: ID
+    AprilOptId: ID
+    MayOptId: ID
+    JuneOptId: ID
+    JulyOptId: ID
+    AugustOptId: ID
+    SeptemberOptId: ID
+    OctoberOptId: ID
+    NovemberOptId: ID
+    DecemberOptId: ID
+}
+
+type Schedule {
+    id: ID!
+    appointments: [Appointment!]!
+    doctors: [Doctor!]!
+    monthScheduleOptList: [MonthScheduleOpt!]!
+    creator: User!
+    createdAt: String!
+}
+
+type Appointment {
     from: String!
     to: String!
 }
