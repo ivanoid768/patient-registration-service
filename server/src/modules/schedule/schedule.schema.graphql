@@ -1,0 +1,39 @@
+extend type Query {
+  	scheduleSettings: ScheduleSettings! @authRequired(role: Admin)
+}
+
+extend type Mutation {
+    setAppointmentDuration(duration: Int!) ScheduleSettings! @authRequired(role: Admin)
+    addDayScheduleOpt(input: DayScheduleInput): DayScheduleOptResp! @authRequired(role: Admin)
+}
+
+type TimeRange {
+    from: String!
+    to: String!
+}
+
+type ScheduleSettings {
+    appointmentDuration: Int!
+}
+
+type DayScheduleOptResp {
+    id: ID!
+    nextStep: String!
+    dayScheduleOpt: DayScheduleOpt!
+    # appointmentDurationId: ID!
+}
+
+type DayScheduleOpt {
+    appointments: [TimeRange!]!
+}
+
+input DayScheduleInput {
+    from: String!
+    to: String!
+    pauseList: [Pause!]!
+}
+
+input Pause{
+    from: String!
+    to: String!
+}
