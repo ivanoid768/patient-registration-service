@@ -3,14 +3,11 @@ import { Appointment } from "./appointment";
 
 export interface IDaySchedule {
     timeslots: {
-        dateFrom: Date; // TODO: only time of day.
+        from: number; // TODO: only time of day.
+        to: number;
         duration: number; // minutes
     }[]
-    id: String;
-    appointments: {
-        from: Date;
-        to: Date;
-    }[]
+    duration: number; // minutes
 }
 
 export enum DayOfWeek {
@@ -41,18 +38,24 @@ export namespace ScheduleSettings {
         daySchedules: IDaySchedule[];
         weekSchedules: IWeekSchedule[];
         monthSchedules: IMonthSchedule[];
-        diration: number;
+        duration: number;
     }
 
     export const ScheduleSettingsToken = 'ScheduleSettingsDIToken';
 
     const DayScheduleSchema = new mongoose.Schema({
-        appointments: {
+        timeslots: {
             type: [new mongoose.Schema({
-                from: Date,
-                to: Date,
+                from: Number,
+                to: Number,
+                duration: Number,
             })]
         },
+        duration: {
+            type: Number,
+            required: true,
+            default: 15
+        }
     })
 
     export const ScheduleSettingsSchema = new mongoose.Schema({

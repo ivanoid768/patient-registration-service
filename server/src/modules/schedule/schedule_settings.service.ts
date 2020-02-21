@@ -37,8 +37,45 @@ export class ScheduleSettingsService {
 
     async createDaySchedule(daySchedule: DayScheduleDto) {
         let settings = await this.settingsModel.findOne().exec()
+        let settDuration = settings.duration
 
-        settings.daySchedules.push(daySchedule as unknown as IDaySchedule)
+        let timeslots: {
+            from: number;
+            to: number;
+            duration: number;
+        }[] = []
+
+        let pauses = daySchedule.pauses;
+        let from = daySchedule.from
+        let to = daySchedule.to
+
+        pauses.unshift({ from: from, to: from })
+        pauses.push({ from: to, to: to })
+
+        pauses.forEach((pause, i, pausesArr) => {
+            let nextPause = pausesArr[i + 1]
+            if (!nextPause) {
+                return;
+            }
+
+            let range = { from: pause.to, to: nextPause.from }
+
+            let slotsCount = Math.round((range.to - range.from) / settDuration)
+
+            for (let j = 0; j < slotsCount; j++) {
+                timeslots.push({
+                    from: range.from + j * settDuration,
+                    to: range.from + ((j + 1) * settDuration),
+                    duration: settDuration
+                })
+            }
+
+        })
+
+        settings.daySchedules.push({
+            timeslots: timeslots,
+            duration: settDuration,
+        })
         let updatedSettings = await settings.save()
 
         return updatedSettings.daySchedules;
