@@ -10,9 +10,9 @@ export class DayScheduleDto {
 }
 
 export type WeekScheduleDto = {
-    [key in DayOfWeek]: string;
+    [key in DayOfWeek]?: string;
 };
 
 export type MonthScheduleDto = {
-    [key in WeekOfMonth]: string;
+    [key in WeekOfMonth]?: string;
 };

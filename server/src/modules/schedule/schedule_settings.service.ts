@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ScheduleSettings, IDaySchedule, IWeekSchedule, IMonthSchedule } from 'src/models/schedule_settings';
+import { ScheduleSettings, DaySchedule, WeekSchedule, MonthSchedule, DayOfWeek, WeekOfMonth } from 'src/models/schedule_settings';
 import { DayScheduleDto, WeekScheduleDto, MonthScheduleDto } from './schedule_settings.dto';
 
 @Injectable()
 export class ScheduleSettingsService {
     constructor(
         @InjectModel(ScheduleSettings.ScheduleSettingsToken) private readonly settingsModel: Model<ScheduleSettings.IScheduleSettings>,
+        @InjectModel(DaySchedule.DayScheduleToken) private readonly dayScheduleModel: Model<DaySchedule.IDaySchedule>,
+        @InjectModel(WeekSchedule.WeekScheduleToken) private readonly weekScheduleModel: Model<WeekSchedule.IWeekSchedule>,
+        @InjectModel(MonthSchedule.MonthScheduleToken) private readonly monthScheduleModel: Model<MonthSchedule.IMonthSchedule>,
     ) { }
 
     async getSettings() {
@@ -21,23 +24,25 @@ export class ScheduleSettingsService {
     }
 
     async getDaySchedules() {
-        let settings = await this.settingsModel.findOne().exec()
-        return settings.daySchedules;
+        let daySchedules = await this.dayScheduleModel.find({}).exec()
+        return daySchedules;
     }
 
     async getWeekSchedules() {
-        let settings = await this.settingsModel.findOne().exec()
-        return settings.weekSchedules;
+        let weekSchedules = await this.weekScheduleModel.find({}).exec()
+
+        return weekSchedules
     }
 
     async getMonthSchedules() {
-        let settings = await this.settingsModel.findOne().exec()
-        return settings.monthSchedules;
+        let monthSchedules = await this.monthScheduleModel.find({}).exec()
+
+        return monthSchedules
     }
 
     async createDaySchedule(daySchedule: DayScheduleDto) {
         let settings = await this.settingsModel.findOne().exec()
-        let settDuration = settings.duration
+        let settDuration = settings.defaultDuration
 
         let timeslots: {
             from: number;
@@ -72,30 +77,57 @@ export class ScheduleSettingsService {
 
         })
 
-        settings.daySchedules.push({
-            timeslots: timeslots,
-            duration: settDuration,
+        let newDaySchedule = await this.dayScheduleModel.create({
+            timeslots: timeslots
         })
-        let updatedSettings = await settings.save()
 
-        return updatedSettings.daySchedules;
+        settings.daySchedules.push(newDaySchedule._id)
+        await settings.save()
+
+        return newDaySchedule;
     }
 
     async createWeekSchedule(weekSchedule: WeekScheduleDto) {
-        let settings = await this.settingsModel.findOne().exec()
+        let days = new Map<DayOfWeek, string>()
+        let day = weekSchedule[0];
 
-        settings.weekSchedules.push(weekSchedule as unknown as IWeekSchedule)
-        let updatedSettings = await settings.save()
+        days[DayOfWeek.Monday] = weekSchedule[0]
 
-        return updatedSettings.weekSchedules;
+        for (let i = 1; i < 7; i++) {
+            let iStr = i.toString()
+            if (weekSchedule[i]) {
+                days[iStr] = weekSchedule[i]
+                day = weekSchedule[i]
+                continue;
+            }
+
+            days[iStr] = day
+        }
+
+        return this.weekScheduleModel.create({
+            days: days
+        })
     }
 
     async createMonthSchedule(monthSchedule: MonthScheduleDto) {
-        let settings = await this.settingsModel.findOne().exec()
+        let weeks = new Map<WeekOfMonth, string>()
+        let week = monthSchedule[0];
 
-        settings.monthSchedules.push(monthSchedule as unknown as IMonthSchedule)
-        let updatedSettings = await settings.save()
+        weeks[WeekOfMonth.First] = monthSchedule[0]
 
-        return updatedSettings.monthSchedules;
+        for (let i = 1; i < 4; i++) {
+            let iStr = i.toString()
+            if (monthSchedule[i]) {
+                weeks[iStr] = monthSchedule[i]
+                week = monthSchedule[i]
+                continue;
+            }
+
+            weeks[iStr] = week
+        }
+
+        return this.monthScheduleModel.create({
+            weeks: weeks
+        })
     }
 }
