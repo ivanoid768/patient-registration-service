@@ -17,14 +17,6 @@ export enum WeekOfMonth {
     Forth = '4',
 }
 
-// export type IWeekSchedule = {
-//     [key in DayOfWeek]: string;
-// };
-
-// export type IMonthSchedule = {
-//     [key in WeekOfMonth]: string;
-// }
-
 export namespace DaySchedule {
     export interface IDaySchedule extends Document {
         id: string;
