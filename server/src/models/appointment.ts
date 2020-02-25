@@ -2,8 +2,9 @@ import * as mongoose from "mongoose";
 
 export namespace Appointment {
     export interface IAppointment extends mongoose.Document {
-        doctor: mongoose.Types.ObjectId;
-        patient: mongoose.Types.ObjectId;
+        free: boolean;
+        doctor?: mongoose.Types.ObjectId;
+        patient?: mongoose.Types.ObjectId;
         date: {
             from: Date;
             to: Date;
@@ -15,27 +16,32 @@ export namespace Appointment {
     export const AppointmentToken = 'AppointmentDIToken';
 
     export const AppointmentSchema = new mongoose.Schema({
-        doctor:{
+        free: {
+            type: Boolean,
+            default: true,
+            required: true
+        },
+        doctor: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Doctor',
-            required: true
+            required: false
         },
-        patient:{
+        patient: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Patient',
-            required: true
+            required: false
         },
         date: {
-            from:{
-                type:Date,
+            from: {
+                type: Date,
                 required: true
             },
-            to:{ 
+            to: {
                 type: Date,
                 required: true
             }
         },
-        notes:{
+        notes: {
             type: String,
             default: '',
             required: true

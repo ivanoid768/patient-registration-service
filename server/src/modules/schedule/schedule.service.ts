@@ -6,6 +6,7 @@ import { Schedule, MonthOfYear } from 'src/models/schedule';
 import { Appointment } from 'src/models/appointment';
 import { CreateScheduleDto } from './schedule.dto';
 import { fillMapGapes, buildNewAppointment } from './schedule.utils';
+import { Doctor } from 'src/models/doctor';
 
 @Injectable()
 export class ScheduleSettingsService {
@@ -16,12 +17,19 @@ export class ScheduleSettingsService {
         @InjectModel(DaySchedule.DayScheduleToken) private readonly dayScheduleModel: Model<DaySchedule.IDaySchedule>,
         @InjectModel(WeekSchedule.WeekScheduleToken) private readonly weekScheduleModel: Model<WeekSchedule.IWeekSchedule>,
         @InjectModel(MonthSchedule.MonthScheduleToken) private readonly monthScheduleModel: Model<MonthSchedule.IMonthSchedule>,
+        @InjectModel(Doctor.DoctorToken) private readonly doctorModel: Model<Doctor.IDoctor>,
     ) { }
 
     async createSchedule(inputSchedule: CreateScheduleDto) {
         let fullInput = fillMapGapes<MonthOfYear, string>(inputSchedule, 12)
 
-        let appointmentDataList: any[] = []
+        let newSchedule = await this.scheduleModel.create({
+            name: 'name' + Math.random(),
+            draft: true,
+            months: fullInput,
+        })
+
+        let appointmentDataList: {}[] = []
 
         let revInput = new Map<string, MonthOfYear>()
 
@@ -62,7 +70,10 @@ export class ScheduleSettingsService {
 
                         let newAppointmentData = buildNewAppointment(timeslot, dayName, weekName, monthName)
 
-                        appointmentDataList.push(newAppointmentData)
+                        appointmentDataList.push({
+                            ...newAppointmentData,
+                            scheduleId: newSchedule._id
+                        })
 
                     }
 
@@ -73,15 +84,20 @@ export class ScheduleSettingsService {
         }
 
         let appointments = await this.appointmentModel.insertMany(appointmentDataList)
+        let appointmentIds = appointments.map(appointment => appointment._id)
 
-        let newSchedule = await this.scheduleModel.create({
-            name: 'name' + Math.random(),
-            draft: false,
-            months: fullInput,
-            appointments: appointments.map(appointment => appointment._id)
-        })
+        newSchedule.appointments = appointmentIds;
+        await newSchedule.save()
 
         return newSchedule;
+    }
+
+    async assignSchedule(scheduleId: string, doctorIds: string[]) {
+        let updateResult = await this.doctorModel.updateMany({ _id: { $in: doctorIds } }, { schedule: scheduleId })
+
+        return {
+            doctorsCount: updateResult.nModified
+        }
     }
 
 }
