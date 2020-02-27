@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ScheduleSettings, DaySchedule, WeekSchedule, MonthSchedule, WeekOfMonth, DayOfWeek } from 'src/models/schedule_settings';
+import { DaySchedule, WeekSchedule, MonthSchedule, WeekOfMonth, DayOfWeek } from 'src/models/schedule_settings';
 import { Schedule, MonthOfYear } from 'src/models/schedule';
 import { Appointment } from 'src/models/appointment';
 import { CreateScheduleDto } from './schedule.dto';
-import { fillMapGapes, buildNewAppointment } from './schedule.utils';
+import { fillMapGapes, buildNewAppointment, buildAppointmentsForRestDaysOfMonth } from './schedule.utils';
 import { Doctor } from 'src/models/doctor';
 
 @Injectable()
@@ -49,6 +49,17 @@ export class ScheduleService {
             })
 
             let weekScheduleList = await this.weekScheduleModel.find({ _id: { $in: weekIds } }).exec()
+            let restAppointments = await buildAppointmentsForRestDaysOfMonth(
+                monthName,
+                weekScheduleList.find(weekSchedule => weekSchedule.id === monthSchedule.weeks.get(WeekOfMonth.First)),
+                weekScheduleList.find(weekSchedule => weekSchedule.id === monthSchedule.weeks.get(WeekOfMonth.Forth)),
+                this.dayScheduleModel
+            )
+
+            appointmentDataList.push(...restAppointments.map(restAppointment => ({
+                ...restAppointment,
+                scheduleId: newSchedule._id
+            })))
 
             for (const weekSchedule of weekScheduleList) {
                 let dayIds = Array.from(weekSchedule.days.values())
