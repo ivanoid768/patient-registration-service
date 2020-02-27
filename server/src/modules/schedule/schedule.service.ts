@@ -9,7 +9,7 @@ import { fillMapGapes, buildNewAppointment } from './schedule.utils';
 import { Doctor } from 'src/models/doctor';
 
 @Injectable()
-export class ScheduleSettingsService {
+export class ScheduleService {
     constructor(
         @InjectModel(ScheduleSettings.ScheduleSettingsToken) private readonly settingsModel: Model<ScheduleSettings.IScheduleSettings>,
         @InjectModel(Schedule.ScheduleToken) private readonly scheduleModel: Model<Schedule.ISchedule>,
@@ -95,9 +95,11 @@ export class ScheduleSettingsService {
     async assignSchedule(scheduleId: string, doctorIds: string[]) {
         let updateResult = await this.doctorModel.updateMany({ _id: { $in: doctorIds } }, { schedule: scheduleId })
 
-        return {
-            doctorsCount: updateResult.nModified
-        }
+        return this.scheduleModel.findById(scheduleId)
+    }
+
+    async getDoctors(scheduleId: string) {
+        return this.doctorModel.find({ schedule: scheduleId })
     }
 
 }
