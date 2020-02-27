@@ -6,9 +6,9 @@ import { AppService } from './app.service';
 import { UserSchema } from './models/users';
 import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { join } from 'path';
 import { GQLAuthMiddleware } from './modules/auth/gqlauth.middleware';
 import { AuthRequiredDirective } from './modules/auth/authRequiredDirective';
+import { ScheduleModule } from './modules/schedule/schedule.module';
 
 @Module({
 	imports: [
@@ -34,7 +34,8 @@ import { AuthRequiredDirective } from './modules/auth/authRequiredDirective';
 		}),
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		UsersModule,
-		AuthModule
+		AuthModule,
+		ScheduleModule
 	],
 	controllers: [AppController],
 	providers: [{

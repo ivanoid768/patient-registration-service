@@ -101,14 +101,5 @@ export class ScheduleResolver {
         return this.scheduleService.getDoctors(schedule.id)
     }
 
-    // setAppointmentDuration(duration: Int!): ScheduleSettings! @authRequired(role: Admin)
-    // addDayScheduleOpt(input: DayScheduleInput!, pauses: [Pause!]!): AddDayScheduleOptResp! @authRequired(role: Admin)
-    // addWeekScheduleOpt(input: WeekScheduleInput!): AddWeekScheduleOptResp! @authRequired(role: Admin)
-    // addMonthScheduleOpt(input: MonthScheduleInput!): AddMonthScheduleOptResp! @authRequired(role: Admin)
-
-    // createSchedule(input: CreateScheduleInput!): Schedule! @authRequired(role: Admin)
-
-    // assignSchedule(scheduleId: ID!, doctors: [Doctor!]!): Schedule! @authRequired(role: Admin)
-
-
+    
 }

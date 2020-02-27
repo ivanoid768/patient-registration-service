@@ -11,7 +11,6 @@ import { Doctor } from 'src/models/doctor';
 @Injectable()
 export class ScheduleService {
     constructor(
-        @InjectModel(ScheduleSettings.ScheduleSettingsToken) private readonly settingsModel: Model<ScheduleSettings.IScheduleSettings>,
         @InjectModel(Schedule.ScheduleToken) private readonly scheduleModel: Model<Schedule.ISchedule>,
         @InjectModel(Appointment.AppointmentToken) private readonly appointmentModel: Model<Appointment.IAppointment>,
         @InjectModel(DaySchedule.DayScheduleToken) private readonly dayScheduleModel: Model<DaySchedule.IDaySchedule>,
