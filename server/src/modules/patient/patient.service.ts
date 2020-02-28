@@ -1,0 +1,101 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Appointment } from 'src/models/appointment';
+import { CreateAppointmentDto } from './patient.dto';
+import { Doctor } from 'src/models/doctor';
+import { Patient } from 'src/models/patient';
+import { Timeslot } from 'src/models/timeslot';
+
+@Injectable()
+export class PatientService {
+    constructor(
+        @InjectModel(Appointment.AppointmentToken) private readonly appointmentModel: Model<Appointment.IAppointment>,
+        @InjectModel(Timeslot.TimeslotToken) private readonly timeslotModel: Model<Timeslot.ITimeslot>,
+        @InjectModel(Doctor.DoctorToken) private readonly doctorModel: Model<Doctor.IDoctor>,
+        @InjectModel(Patient.PatientToken) private readonly patientModel: Model<Patient.IPatient>,
+    ) { }
+
+    async createAppointment(input: CreateAppointmentDto) {
+        let doctor = await this.doctorModel.findById(input.doctorId)
+        if (!doctor) {
+            throw new Error(`invalid_doctor_id:${input.doctorId}`)
+        }
+
+        let timeslot = await this.timeslotModel.findById(input.appointmentId)
+        if (!timeslot) {
+            throw new Error(`invalid_timeslot_id:${input.appointmentId}`)
+        }
+
+        let patient = await this.patientModel.findOne({
+            $or: {
+                email: input.patientEmail,
+                phone: input.patientPhone
+            }
+        }).exec()
+
+        if (!patient) {
+            patient = await this.patientModel.create({
+                name: input.patientName,
+                surname: input.patientSurname,
+                middlename: input.patientSurname,
+                phone: input.patientPhone,
+                email: input.patientEmail
+            })
+        }
+
+        timeslot.doctors.push(doctor._id)
+        await timeslot.save()
+
+        let appointment = await this.appointmentModel.create({
+            patient: patient._id,
+            doctor: doctor._id,
+            timeslot: timeslot._id,
+            free: false,
+            notes: input.notes,
+            scheduleId: doctor.schedule
+        })
+
+        return appointment;
+    }
+
+    async freeAppointmentList(doctorId: string, forRestAPI: boolean = false) {
+        let doctor = await this.doctorModel.findById(doctorId)
+        if (!doctor) {
+            throw new Error(`invalid_doctor_id:${doctorId}`)
+        }
+
+        let freeAppointments = await this.timeslotModel
+            .find({
+                scheduleId: doctor.schedule,
+                doctors: { $nin: doctorId },
+            }, forRestAPI ? '-doctors -scheduleId' : null)
+            .exec()
+
+        return freeAppointments;
+    }
+
+    async cancelAppointment(appointmentId: string) {
+        let appointment = await this.appointmentModel.findById(appointmentId)
+        if (!appointment) {
+            throw new Error(`invalid_appointment_id:${appointmentId}`)
+        }
+
+        let timeslot = await this.timeslotModel.findById(appointment.timeslot)
+        if (!timeslot) {
+            throw new Error(`invalid_timeslot_id:${appointment.timeslot}`)
+        }
+
+        timeslot.doctors.splice(timeslot.doctors.findIndex(doctor => doctor === appointment.doctor))
+        await timeslot.save()
+
+        let removedAppointment = await appointment.remove()
+
+        return removedAppointment;
+    }
+
+    async rearrangeAppointment(appointmentId: string) {
+        
+    }
+
+}

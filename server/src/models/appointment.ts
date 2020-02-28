@@ -3,13 +3,14 @@ import * as mongoose from "mongoose";
 export namespace Appointment {
     export interface IAppointment extends mongoose.Document {
         free: boolean;
-        doctor?: mongoose.Types.ObjectId;
-        patient?: mongoose.Types.ObjectId;
+        doctor: mongoose.Schema.Types.ObjectId;
+        patient: mongoose.Schema.Types.ObjectId;
         date: {
             from: Date;
             to: Date;
         },
         notes: string;
+        timeslot: mongoose.Schema.Types.ObjectId;
         scheduleId: mongoose.Schema.Types.ObjectId;
     }
 
@@ -44,6 +45,10 @@ export namespace Appointment {
         notes: {
             type: String,
             default: '',
+            required: true
+        },
+        timeslot: {
+            type: mongoose.Schema.Types.ObjectId,
             required: true
         },
         scheduleId: {

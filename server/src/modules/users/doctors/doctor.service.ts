@@ -24,6 +24,12 @@ export class DoctorService {
         return doctorList;
     }
 
+    async respAPIList() {
+        let doctorList = await this.doctorModel.find({}, 'name surname middlename specialization').exec()
+
+        return doctorList;
+    }
+
     async delete(doctorId: Schema.Types.ObjectId | string) {
         return this.doctorModel.findByIdAndDelete(doctorId)
     }

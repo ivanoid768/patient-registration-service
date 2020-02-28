@@ -6,16 +6,17 @@ export namespace Timeslot {
             from: Date;
             to: Date;
         },
-        appointment?: mongoose.Schema.Types.ObjectId;
+        doctors: mongoose.Schema.Types.ObjectId[];
         scheduleId: mongoose.Schema.Types.ObjectId;
     }
 
     export const TimeslotToken = 'TimeslotDIToken';
 
     export const TimeslotSchema = new mongoose.Schema({
-        doctor: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Appointment'
+        doctors: {
+            type: [mongoose.Schema.Types.ObjectId],
+            required: true,
+            default: []
         },
         date: {
             from: {
@@ -34,6 +35,3 @@ export namespace Timeslot {
     })
 
 }
-
-
-
