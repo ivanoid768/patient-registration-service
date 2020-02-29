@@ -3,7 +3,6 @@ import * as isemail from 'isemail';
 
 export namespace Patient {
     export interface IPatient extends mongoose.Document {
-        id: string;
         name: string;
         surname: string;
         middlename?: string;

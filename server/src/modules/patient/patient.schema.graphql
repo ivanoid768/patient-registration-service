@@ -1,0 +1,34 @@
+extend type Query {
+  	getFreeAppointmentList(doctorId: ID!): [Timeslot!]! @authRequired(role: Admin)
+}
+
+extend type Mutation {
+    cancelAppointment(id: ID!): Appointment! @authRequired(role: Admin)
+    rearrangeAppointment(appointmentId: ID!, timeslotId: ID!): Appointment! @authRequired(role: Admin)
+}
+
+type Appointment {
+    free: Boolean!
+    doctor: Doctor!
+    patient: Patient!
+    from: String!
+    to: String!
+    notes: String!
+    timeslot: Timeslot!
+    schedule: Schedule!
+}
+
+type Timeslot {
+    from: String!
+    to: String!
+    doctors: [Doctor!]!
+    schedule: Schedule!
+}
+
+type Patient {
+    name: String!
+    surname: String!
+    middlename: String
+    phone: String
+    email: String
+}

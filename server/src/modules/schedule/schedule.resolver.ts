@@ -4,6 +4,7 @@ import { ScheduleService } from "./schedule.service";
 import { DayScheduleDto, WeekScheduleDto, MonthScheduleDto } from "./schedule_settings.dto";
 import { CreateScheduleDto } from "./schedule.dto";
 import { Schedule } from "src/models/schedule";
+import { Timeslot } from "src/models/timeslot";
 
 @Resolver('Schedule')
 export class ScheduleResolver {
@@ -101,5 +102,33 @@ export class ScheduleResolver {
         return this.scheduleService.getDoctors(schedule.id)
     }
 
-    
+
+}
+
+@Resolver('Timeslot')
+export class TimeslotResolver {
+    constructor(
+        private readonly scheduleService: ScheduleService,
+    ) { }
+
+    @ResolveProperty('doctors')
+    async getDoctors(@Parent() timeslot: Timeslot.ITimeslot) {
+        return this.scheduleService.getDoctors(timeslot.id)
+    }
+
+    @ResolveProperty('schedule')
+    async getSchedule(@Parent() timeslot: Timeslot.ITimeslot) {
+        return this.scheduleService.getById(timeslot.scheduleId as unknown as string)
+    }
+
+    @ResolveProperty('from')
+    async getfrom(@Parent() timeslot: Timeslot.ITimeslot) {
+        return timeslot.date.from;
+    }
+
+    @ResolveProperty('to')
+    async getTo(@Parent() timeslot: Timeslot.ITimeslot) {
+        return timeslot.date.to
+    }
+
 }

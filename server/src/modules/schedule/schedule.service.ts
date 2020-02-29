@@ -7,6 +7,7 @@ import { Appointment } from 'src/models/appointment';
 import { CreateScheduleDto } from './schedule.dto';
 import { fillMapGapes, buildNewAppointment, buildAppointmentsForRestDaysOfMonth } from './schedule.utils';
 import { Doctor } from 'src/models/doctor';
+import { Timeslot } from 'src/models/timeslot';
 
 @Injectable()
 export class ScheduleService {
@@ -110,6 +111,10 @@ export class ScheduleService {
 
     async getDoctors(scheduleId: string) {
         return this.doctorModel.find({ schedule: scheduleId })
+    }
+
+    async getById(id: string) {
+        return this.scheduleModel.findById(id)
     }
 
 }

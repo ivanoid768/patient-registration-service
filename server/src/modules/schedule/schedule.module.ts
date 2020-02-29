@@ -4,7 +4,7 @@ import { Doctor } from '../../models/doctor';
 import { User } from '../../models/users';
 import { ScheduleService } from './schedule.service';
 import { ScheduleSettingsService } from './schedule_settings.service';
-import { ScheduleResolver } from './schedule.resolver';
+import { ScheduleResolver, TimeslotResolver } from './schedule.resolver';
 import { Schedule } from 'src/models/schedule';
 import { ScheduleSettings, DaySchedule, WeekSchedule, MonthSchedule } from 'src/models/schedule_settings';
 import { Appointment } from 'src/models/appointment';
@@ -46,7 +46,11 @@ import { Appointment } from 'src/models/appointment';
     providers: [
         ScheduleService,
         ScheduleSettingsService,
-        ScheduleResolver
+        ScheduleResolver,
+        TimeslotResolver,
     ],
+    exports: [
+        TimeslotResolver,
+    ]
 })
 export class ScheduleModule { }
