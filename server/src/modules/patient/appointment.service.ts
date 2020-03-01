@@ -7,6 +7,8 @@ import { Doctor } from 'src/models/doctor';
 import { Patient } from 'src/models/patient';
 import { Timeslot } from 'src/models/timeslot';
 import { MailerService } from 'src/common/mailer';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { addDays, startOfTomorrow } from 'date-fns';
 
 @Injectable()
 export class AppointmentService {
@@ -63,7 +65,8 @@ export class AppointmentService {
             this.mailer.mail.sendMail({
                 subject: `Регистрация на прием к врачу. Специализация: ${doctor.specialization}.`, // TODO clinic name
                 text: `Уважаемый ${patient.surname} ${patient.name} ${patient.middlename} вы зарегистрированы на прием к ${doctor.name} ${doctor.surname}. 
-                    Дата приема: ${appointment.date.from}`,
+                    Дата приема: ${appointment.date.from.toLocaleDateString()}.
+                    Чтобы отменить или перенести приём перейдите по ссылке: ${'TODO:cancel_url'}`,
                 to: patient.email
             })
         }
@@ -130,6 +133,31 @@ export class AppointmentService {
         this.cancel(oldAppointment._id)
 
         return appointment;
+    }
+
+    @Cron(CronExpression.EVERY_DAY_AT_2PM)
+    async remindPatients() {
+        let tomorrow = startOfTomorrow()
+
+        let appointments = await this.appointmentModel.find({
+            'date.from': { $gt: tomorrow, $lt: addDays(tomorrow, 1) }
+        })
+
+        for (const appointment of appointments) {
+            let patient = await this.patientModel.findById(appointment.patient).exec()
+            let doctor = await this.doctorModel.findById(appointment.doctor).exec()
+
+            if (patient.email) {
+                this.mailer.mail.sendMail({
+                    subject: `Прием к врачу. Специализация: ${doctor.specialization}.`, // TODO clinic name
+                    text: `Уважаемый ${patient.surname} ${patient.name} ${patient.middlename}. Напоминаем что вы зарегистрированы на прием к ${doctor.name} ${doctor.surname}. 
+                        Дата приема: ${appointment.date.from}.
+                        Чтобы отменить или перенести приём перейдите по ссылке: ${'TODO:cancel_url'}`,
+                    to: patient.email
+                })
+            }
+        }
+
     }
 
 }

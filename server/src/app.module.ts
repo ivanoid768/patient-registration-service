@@ -1,6 +1,7 @@
 import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
+import { ScheduleModule as CronScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserSchema } from './models/users';
@@ -39,6 +40,7 @@ import config from './config/config'
 			load: [config],
 			isGlobal: true,
 		}),
+		CronScheduleModule.forRoot(),
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		UsersModule,
 		AuthModule,
