@@ -9,6 +9,7 @@ import { PatientResolver } from './patient.resolver';
 import { PatientController } from './patient.controller';
 import { Patient } from 'src/models/patient';
 import { Timeslot } from 'src/models/timeslot';
+import { MailerService } from 'src/common/mailer';
 
 @Module({
     imports: [
@@ -31,6 +32,7 @@ import { Timeslot } from 'src/models/timeslot';
                 schema: Timeslot.TimeslotSchema
             },
         ]),
+        MailerService
     ],
     controllers: [
         PatientController

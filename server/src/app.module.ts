@@ -9,6 +9,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { GQLAuthMiddleware } from './modules/auth/gqlauth.middleware';
 import { AuthRequiredDirective } from './modules/auth/authRequiredDirective';
 import { ScheduleModule } from './modules/schedule/schedule.module';
+import { PatientModule } from './modules/patient/patient.module';
+import { ConfigModule } from '@nestjs/config'
+import config from './config/config'
 
 @Module({
 	imports: [
@@ -32,10 +35,15 @@ import { ScheduleModule } from './modules/schedule/schedule.module';
 				authRequired: AuthRequiredDirective,
 			},
 		}),
+		ConfigModule.forRoot({
+			load: [config],
+			isGlobal: true,
+		}),
 		MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
 		UsersModule,
 		AuthModule,
-		ScheduleModule
+		ScheduleModule,
+		PatientModule,
 	],
 	controllers: [AppController],
 	providers: [{

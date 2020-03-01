@@ -6,6 +6,7 @@ import { CreateAppointmentDto } from './patient.dto';
 import { Doctor } from 'src/models/doctor';
 import { Patient } from 'src/models/patient';
 import { Timeslot } from 'src/models/timeslot';
+import { MailerService } from 'src/common/mailer';
 
 @Injectable()
 export class AppointmentService {
@@ -14,6 +15,7 @@ export class AppointmentService {
         @InjectModel(Timeslot.TimeslotToken) private readonly timeslotModel: Model<Timeslot.ITimeslot>,
         @InjectModel(Doctor.DoctorToken) private readonly doctorModel: Model<Doctor.IDoctor>,
         @InjectModel(Patient.PatientToken) private readonly patientModel: Model<Patient.IPatient>,
+        private readonly mailer: MailerService,
     ) { }
 
     async create(input: CreateAppointmentDto) {
@@ -56,6 +58,15 @@ export class AppointmentService {
             scheduleId: doctor.schedule,
             date: timeslot.date
         })
+
+        if (patient.email) {
+            this.mailer.mail.sendMail({
+                subject: `Регистрация на прием к врачу. Специализация: ${doctor.specialization}.`, // TODO clinic name
+                text: `Уважаемый ${patient.surname} ${patient.name} ${patient.middlename} вы зарегистрированы на прием к ${doctor.name} ${doctor.surname}. 
+                    Дата приема: ${appointment.date.from}`,
+                to: patient.email
+            })
+        }
 
         return { appointment, doctor, patient }
     }
