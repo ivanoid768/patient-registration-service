@@ -93,7 +93,7 @@ export class ScheduleSettingsService {
 
         days[DayOfWeek.Monday] = weekSchedule[0]
 
-        for (let i = 1; i < 7; i++) {
+        for (let i = 1; i < 5; i++) {
             let iStr = i.toString()
             if (weekSchedule[i]) {
                 days[iStr] = weekSchedule[i]
@@ -102,6 +102,14 @@ export class ScheduleSettingsService {
             }
 
             days[iStr] = day
+        }
+
+        if(weekSchedule[DayOfWeek.Sunday]){
+            days[DayOfWeek.Sunday] = weekSchedule[DayOfWeek.Sunday]
+        }
+
+        if(weekSchedule[DayOfWeek.Saturday]){
+            days[DayOfWeek.Saturday] = weekSchedule[DayOfWeek.Saturday]
         }
 
         return this.weekScheduleModel.create({
