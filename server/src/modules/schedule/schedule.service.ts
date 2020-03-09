@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Schema } from 'mongoose';
 import { DaySchedule, WeekSchedule, MonthSchedule, WeekOfMonth, DayOfWeek } from 'src/models/schedule_settings';
 import { Schedule, MonthOfYear } from 'src/models/schedule';
 import { Appointment } from 'src/models/appointment';
@@ -9,11 +9,23 @@ import { fillMapGapes, buildNewAppointment, buildAppointmentsForRestDaysOfMonth 
 import { Doctor } from 'src/models/doctor';
 import { Timeslot } from 'src/models/timeslot';
 
+interface ITimeslotWithAppointment extends Timeslot.ITimeslot {
+    appointment?: Appointment.IAppointment;
+}
+
+interface IScheduleWithAppointments {
+    name: string;
+    draft: boolean;
+    months: Map<MonthOfYear, string>;
+    timeslots: ITimeslotWithAppointment[];
+}
+
 @Injectable()
 export class ScheduleService {
     constructor(
         @InjectModel(Schedule.ScheduleToken) private readonly scheduleModel: Model<Schedule.ISchedule>,
         @InjectModel(Appointment.AppointmentToken) private readonly appointmentModel: Model<Appointment.IAppointment>,
+        @InjectModel(Timeslot.TimeslotToken) private readonly timeslotModel: Model<Timeslot.ITimeslot>,
         @InjectModel(DaySchedule.DayScheduleToken) private readonly dayScheduleModel: Model<DaySchedule.IDaySchedule>,
         @InjectModel(WeekSchedule.WeekScheduleToken) private readonly weekScheduleModel: Model<WeekSchedule.IWeekSchedule>,
         @InjectModel(MonthSchedule.MonthScheduleToken) private readonly monthScheduleModel: Model<MonthSchedule.IMonthSchedule>,
@@ -94,7 +106,7 @@ export class ScheduleService {
 
         }
 
-        let appointments = await this.appointmentModel.insertMany(appointmentDataList)
+        let appointments = await this.timeslotModel.insertMany(appointmentDataList)
         let appointmentIds = appointments.map(appointment => appointment._id)
 
         newSchedule.appointments = appointmentIds;
@@ -115,6 +127,78 @@ export class ScheduleService {
 
     async getById(id: string) {
         return this.scheduleModel.findById(id)
+    }
+
+    async getDoctorSchedule(doctorId: string) {
+        let doctor = await this.doctorModel.findById(doctorId).exec()
+        if (!doctor) {
+            throw new Error(`invalid_doctor_id:${doctorId}`)
+        }
+
+        let schedule = await this.scheduleModel.findById(doctor.schedule).exec()
+        if (!schedule) {
+            throw new Error(`invalid_schedule_id:${doctor.schedule}`)
+        }
+
+        let scheduleWithAppointments: IScheduleWithAppointments[] = await this.scheduleModel.aggregate([
+            {
+                $lookup:
+                {
+                    from: this.timeslotModel.collection.name,
+                    localField: 'appointments',
+                    foreignField: '_id',
+                    as: 'timeslots',
+                },
+            },
+            {
+                $unwind: '$timeslots'
+            },
+            {
+                $lookup:
+                {
+                    from: this.appointmentModel.collection.name,
+                    let: { timeslots: "$timeslots", doctor: doctorId },
+                    pipeline: [
+                        {
+                            $match:
+                            {
+                                $expr:
+                                {
+                                    $and:
+                                        [
+                                            { $eq: ["$doctor", "$$doctor"] },
+                                            { $eq: ["$timeslot", "$$timeslots._id"] }
+                                        ]
+                                }
+                            },
+
+                        },
+                    ],
+                    as: 'timeslots.appointment'
+                }
+            },
+            {
+                $addFields: {
+                    'timeslots.appointment': { $arrayElemAt: ['$timeslots.appointment', 0] }
+                }
+            },
+            {
+                $sort: {
+                    'timeslots.date.from': 1
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: '$name',
+                    draft: '$draft',
+                    months: '$months',
+                    timeslots: { $push: '$timeslots' },
+                }
+            }
+        ])
+
+        return scheduleWithAppointments;
     }
 
 }

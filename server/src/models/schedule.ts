@@ -17,7 +17,6 @@ export enum MonthOfYear {
 
 export namespace Schedule {
     export interface ISchedule extends Document {
-        id: string;
         name: string;
         draft: boolean;
         months: Map<MonthOfYear, string>
