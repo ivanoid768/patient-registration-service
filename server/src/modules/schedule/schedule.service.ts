@@ -8,17 +8,7 @@ import { CreateScheduleDto } from './schedule.dto';
 import { fillMapGapes, buildNewAppointment, buildAppointmentsForRestDaysOfMonth } from './schedule.utils';
 import { Doctor } from 'src/models/doctor';
 import { Timeslot } from 'src/models/timeslot';
-
-interface ITimeslotWithAppointment extends Timeslot.ITimeslot {
-    appointment?: Appointment.IAppointment;
-}
-
-interface IScheduleWithAppointments {
-    name: string;
-    draft: boolean;
-    months: Map<MonthOfYear, string>;
-    timeslots: ITimeslotWithAppointment[];
-}
+import { IScheduleWithAppointments } from './schedule.types';
 
 @Injectable()
 export class ScheduleService {
@@ -142,6 +132,11 @@ export class ScheduleService {
 
         let scheduleWithAppointments: IScheduleWithAppointments[] = await this.scheduleModel.aggregate([
             {
+                $match: {
+                    _id: schedule._id
+                }
+            },
+            {
                 $lookup:
                 {
                     from: this.timeslotModel.collection.name,
@@ -198,7 +193,10 @@ export class ScheduleService {
             }
         ])
 
-        return scheduleWithAppointments;
+        return {
+            schedule,
+            scheduleWithAppointments: scheduleWithAppointments[0],
+        }
     }
 
 }

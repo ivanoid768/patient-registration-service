@@ -33,6 +33,19 @@ export class ScheduleResolver {
         return this.scheduleSettingsService.getMonthSchedules()
     }
 
+    @Query('getDoctorSchedule')
+    async getDoctorSchedule(@Args('doctorId') doctorId: string) {
+        let {schedule, scheduleWithAppointments} = await this.scheduleService.getDoctorSchedule(doctorId)
+
+        return{
+            id: schedule.id,
+            timeslots: scheduleWithAppointments.timeslots,
+            monthScheduleOptList: schedule.months,
+            creator: 'TODO:user',
+            createdAt: 'TODO:date',
+        }
+    }
+
     @Mutation('setAppointmentDuration')
     async setAppointmentDuration(@Args('duration') duration: number) {
         return this.scheduleSettingsService.updateAppointmentDuration(duration)

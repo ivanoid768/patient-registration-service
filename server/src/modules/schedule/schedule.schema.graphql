@@ -3,6 +3,7 @@ extend type Query {
     daySheduleList: [DayScheduleOpt!]! @authRequired(role: Admin)
     weekSheduleList: [WeekScheduleOpt!]! @authRequired(role: Admin)
     monthSheduleList: [MonthScheduleOpt!]! @authRequired(role: Admin)
+    getDoctorSchedule(doctorId:ID!): Schedule!
 }
 
 extend type Mutation {
@@ -110,7 +111,7 @@ input CreateScheduleInput {
 
 type Schedule {
     id: ID!
-    appointments: [Appointment!]!
+    timeslots: [Timeslot!]!
     doctors: [Doctor!]!
     monthScheduleOptList: [MonthScheduleOpt!]!
     creator: User!
@@ -120,4 +121,12 @@ type Schedule {
 type Appointment {
     from: String!
     to: String!
+    doctor: Doctor!
+    patient: Patient!
+}
+
+type Timeslot {
+    from: String!
+    to: String!
+    appointment: Appointment
 }
