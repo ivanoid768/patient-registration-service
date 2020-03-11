@@ -12,7 +12,7 @@ extend type Mutation {
     addWeekScheduleOpt(input: WeekScheduleInput!): AddWeekScheduleOptResp! @authRequired(role: Admin)
     addMonthScheduleOpt(input: MonthScheduleInput!): AddMonthScheduleOptResp! @authRequired(role: Admin)
     createSchedule(input: CreateScheduleInput!): Schedule! @authRequired(role: Admin)
-    assignSchedule(scheduleId: ID!, doctors: [Doctor!]!): Schedule! @authRequired(role: Admin)
+    assignSchedule(scheduleId: ID!, doctors: [ID!]!): Schedule! @authRequired(role: Admin)
 }
 
 type TimeRange {

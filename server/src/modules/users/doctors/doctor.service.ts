@@ -9,7 +9,7 @@ import { CreateDoctorDto } from './doctor.dto';
 export class DoctorService {
     constructor(
         @InjectModel(Doctor.DoctorToken) private readonly doctorModel: Model<Doctor.IDoctor>,
-        @InjectModel(User.UserToken) private readonly userModel: Model<User.IUser>
+        // @InjectModel(User.UserToken) private readonly userModel: Model<User.IUser>
     ) { }
 
     async create(doctor: CreateDoctorDto) {

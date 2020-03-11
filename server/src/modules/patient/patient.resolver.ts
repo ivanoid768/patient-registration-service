@@ -11,7 +11,7 @@ export class PatientResolver {
         private readonly appointmentService: AppointmentService,
         private readonly doctorService: DoctorService,
         private readonly patientService: PatientService,
-        private readonly scheduleService: ScheduleService,
+        // private readonly scheduleService: ScheduleService,
     ) { }
 
     @Query('getFreeAppointmentList')

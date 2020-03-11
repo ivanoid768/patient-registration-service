@@ -10,6 +10,8 @@ import { PatientController } from './patient.controller';
 import { Patient } from 'src/models/patient';
 import { Timeslot } from 'src/models/timeslot';
 import { MailerService } from 'src/common/mailer';
+import { DoctorService } from '../users/doctors/doctor.service';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     imports: [
@@ -32,7 +34,7 @@ import { MailerService } from 'src/common/mailer';
                 schema: Timeslot.TimeslotSchema
             },
         ]),
-        MailerService
+        ConfigModule,
     ],
     controllers: [
         PatientController
@@ -41,6 +43,8 @@ import { MailerService } from 'src/common/mailer';
         AppointmentService,
         PatientService,
         PatientResolver,
+        MailerService,
+        DoctorService,
     ],
 })
 export class PatientModule { }

@@ -5,6 +5,7 @@
  */
 
 /* tslint:disable */
+/* eslint-disable */
 export enum Role {
     User = "User",
     Admin = "Admin",
@@ -149,7 +150,7 @@ export abstract class IMutation {
 
     abstract createSchedule(input: CreateScheduleInput): Schedule | Promise<Schedule>;
 
-    abstract assignSchedule(scheduleId: string, doctors: Doctor[]): Schedule | Promise<Schedule>;
+    abstract assignSchedule(scheduleId: string, doctors: string[]): Schedule | Promise<Schedule>;
 
     abstract addDoctor(input: CreateDoctorInput): Doctor | Promise<Doctor>;
 
